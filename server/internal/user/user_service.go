@@ -77,3 +77,28 @@ func (s *service) GetUserForAuth(c context.Context, username string) (*User, err
 
 	return u, nil
 }
+
+func (s *service) Login(c context.Context, username, password string) (*LoginResponse, error) {
+	ctx, cancel := context.WithTimeout(c, s.timeout)
+	defer cancel()
+
+	u, err := s.repository.GetUserForAuth(ctx, username)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if util.CheckPasswordHash(password, u.Password) != nil {
+		return nil, err
+	}
+
+	return &LoginResponse{
+		ID:         strconv.FormatInt(u.ID, 10),
+		Username:   u.Username,
+		Email:      u.Email,
+		Bio:        u.Bio,
+		Avatar:     u.AvatarURL,
+		Created_at: u.Created_at,
+		Updated_at: u.Updated_at,
+	}, nil
+}

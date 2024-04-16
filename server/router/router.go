@@ -13,6 +13,7 @@ func InitRouter(userHandler *user.Handler) {
 
 	r.POST("/signup", userHandler.CreateUser)
 	r.GET("/user/:username", userHandler.GetUserByUsername)
+	r.POST("/login", userHandler.Login)
 
 }
 

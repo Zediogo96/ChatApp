@@ -32,6 +32,16 @@ type CreateUserResponse struct {
 	Avatar   string `json:"avatar_url"`
 }
 
+type LoginResponse struct {
+	ID         string `json:"id"`
+	Username   string `json:"username"`
+	Email      string `json:"email"`
+	Bio        string `json:"bio"`
+	Avatar     string `json:"avatar_url"`
+	Created_at string `json:"created_at"`
+	Updated_at string `json:"updated_at"`
+}
+
 type Repository interface {
 	CreateUser(ctx context.Context, u *User) (*User, error)
 	GetUserByUsername(ctx context.Context, username string) (*User, error)
@@ -42,4 +52,5 @@ type Service interface {
 	CreateUser(c context.Context, req *CreateUserRequest) (*CreateUserResponse, error)
 	GetUserByUsername(c context.Context, username string) (*User, error)
 	GetUserForAuth(c context.Context, username string) (*User, error)
+	Login(c context.Context, username, password string) (*LoginResponse, error)
 }

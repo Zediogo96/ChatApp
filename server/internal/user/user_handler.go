@@ -56,3 +56,20 @@ func (h *Handler) GetUserForAuth(c *gin.Context) {
 
 	c.JSON(http.StatusOK, u)
 }
+
+func (h *Handler) Login(c *gin.Context) {
+	var u CreateUserRequest
+	if err := c.ShouldBindJSON(&u); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	res, err := h.Service.Login(c.Request.Context(), u.Username, u.Password)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, res)
+}
