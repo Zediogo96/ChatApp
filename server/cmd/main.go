@@ -5,9 +5,17 @@ import (
 	"server/db"
 	"server/internal/user"
 	"server/router"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
+
+	err := godotenv.Load(".env")
+
+	if err != nil {
+		log.Fatalf("> Error loading .env file")
+	}
 
 	dbConn, err := db.NewDB() // db.NewDB() returns a pointer to a Database struct
 

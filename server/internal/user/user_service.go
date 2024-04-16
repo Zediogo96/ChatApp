@@ -2,9 +2,13 @@ package user
 
 import (
 	"context"
+	"os"
+	"server/constants"
 	"server/util"
 	"strconv"
 	"time"
+
+	"github.com/golang-jwt/jwt/v4"
 )
 
 type service struct {
@@ -78,6 +82,12 @@ func (s *service) GetUserForAuth(c context.Context, username string) (*User, err
 	return u, nil
 }
 
+type JWTClaims struct {
+	ID       string `json:"id"`
+	Username string `json:"username"`
+	jwt.RegisteredClaims
+}
+
 func (s *service) Login(c context.Context, username, password string) (*LoginResponse, error) {
 	ctx, cancel := context.WithTimeout(c, s.timeout)
 	defer cancel()
@@ -92,8 +102,27 @@ func (s *service) Login(c context.Context, username, password string) (*LoginRes
 		return nil, err
 	}
 
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, JWTClaims{
+		ID:       strconv.FormatInt(u.ID, 10),
+		Username: u.Username,
+		RegisteredClaims: jwt.RegisteredClaims{
+			Issuer:    strconv.Itoa(int(u.ID)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 12)),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+		},
+	})
+
+	secret := os.Getenv(constants.JWT_SECRET)
+
+	tokenString, err := token.SignedString([]byte(secret))
+
+	if err != nil {
+		return nil, err
+	}
+
 	return &LoginResponse{
 		ID:         strconv.FormatInt(u.ID, 10),
+		Token:      tokenString,
 		Username:   u.Username,
 		Email:      u.Email,
 		Bio:        u.Bio,

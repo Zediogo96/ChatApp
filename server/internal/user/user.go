@@ -34,6 +34,7 @@ type CreateUserResponse struct {
 
 type LoginResponse struct {
 	ID         string `json:"id"`
+	Token      string `json:"token"`
 	Username   string `json:"username"`
 	Email      string `json:"email"`
 	Bio        string `json:"bio"`
