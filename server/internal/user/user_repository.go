@@ -6,6 +6,7 @@ package user
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"time"
 )
 
@@ -41,4 +42,36 @@ func (r *repository) CreateUser(ctx context.Context, u *User) (*User, error) {
 	u.ID = lastInsertID
 
 	return u, nil
+}
+
+func (r *repository) GetUserForAuth(ctx context.Context, username string) (*User, error) {
+	var u User
+
+	query := "SELECT id, username, email, password FROM users WHERE username=$1"
+
+	err := r.db.QueryRowContext(ctx, query, username).Scan(&u.ID, &u.Username, &u.Email, &u.Password)
+
+	if err != nil {
+
+		return nil, err
+	}
+
+	return &u, nil
+}
+
+func (r *repository) GetUserByUsername(ctx context.Context, username string) (*User, error) {
+	var u User
+
+	query := "SELECT id, username, email, password, bio, avatar_url, created_at, updated_at FROM users WHERE username=$1"
+
+	err := r.db.QueryRowContext(ctx, query, username).Scan(&u.ID, &u.Username, &u.Password, &u.Email, &u.Bio, &u.AvatarURL, &u.Created_at, &u.Updated_at)
+
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+
+	fmt.Println(u)
+
+	return &u, nil
 }

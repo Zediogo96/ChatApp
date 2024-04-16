@@ -50,5 +50,30 @@ func (s *service) CreateUser(c context.Context, req *CreateUserRequest) (*Create
 		Bio:      r.Bio,
 		Avatar:   r.AvatarURL,
 	}, nil
+}
 
+func (s *service) GetUserByUsername(c context.Context, username string) (*User, error) {
+	ctx, cancel := context.WithTimeout(c, s.timeout)
+	defer cancel()
+
+	u, err := s.repository.GetUserByUsername(ctx, username)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return u, nil
+}
+
+func (s *service) GetUserForAuth(c context.Context, username string) (*User, error) {
+	ctx, cancel := context.WithTimeout(c, s.timeout)
+	defer cancel()
+
+	u, err := s.repository.GetUserForAuth(ctx, username)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return u, nil
 }

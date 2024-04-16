@@ -34,8 +34,12 @@ type CreateUserResponse struct {
 
 type Repository interface {
 	CreateUser(ctx context.Context, u *User) (*User, error)
+	GetUserByUsername(ctx context.Context, username string) (*User, error)
+	GetUserForAuth(ctx context.Context, username string) (*User, error)
 }
 
 type Service interface {
 	CreateUser(c context.Context, req *CreateUserRequest) (*CreateUserResponse, error)
+	GetUserByUsername(c context.Context, username string) (*User, error)
+	GetUserForAuth(c context.Context, username string) (*User, error)
 }
