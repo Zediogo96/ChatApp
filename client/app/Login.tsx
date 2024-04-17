@@ -15,6 +15,7 @@ import { Link, router } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
 import Colors from "@/constants/Colors";
 import ErrorText from "@/components/ErrorText";
+import api from "@/api";
 
 interface FormData {
     email: string;
@@ -34,9 +35,17 @@ const Login: React.FC = () => {
     const loginMutation = useMutation({
         mutationKey: ["login"],
         mutationFn: async () => {
-            console.log("boas login values > ", getValues());
+            const { email, password } = getValues();
+
+            const response = await api.post("/login", {
+                username: "zediogo96",
+                password: "123",
+            });
+
+            return response.data;
         },
         onError: (error) => {
+            console.log("error", error.message);
             showFeedbackToast({
                 title: "Authentication Error",
                 message: error.message,
@@ -44,6 +53,7 @@ const Login: React.FC = () => {
             });
         },
         onSuccess: async (data) => {
+            console.log("data > ", data);
             showFeedbackToast({
                 title: "Authentication Success",
                 message: "You have successfully logged in.",

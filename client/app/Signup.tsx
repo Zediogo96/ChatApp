@@ -17,6 +17,7 @@ import { DarkTheme, ThemeProvider } from "@react-navigation/native";
 import showFeedbackToast from "@/utils/toast";
 import { useMutation } from "@tanstack/react-query";
 import ErrorText from "@/components/ErrorText";
+import api from "@/api";
 
 interface FormData {
     username: string;
@@ -38,7 +39,15 @@ const Signup: React.FC = () => {
         mutationFn: async (): Promise<any> => {
             const { username, email, password } = getValues();
 
-            console.log("boas signup values > ", username, email, password);
+            console.log(api.getUri());
+
+            const response = api.post("/signup", {
+                username,
+                email,
+                password,
+            });
+
+            console.log(response);
         },
 
         onError: (error: Error) => {

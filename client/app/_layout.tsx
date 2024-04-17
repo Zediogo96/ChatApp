@@ -11,6 +11,7 @@ import { useEffect } from "react";
 
 import { useColorScheme } from "@/components/useColorScheme";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import Toast from "react-native-toast-message";
 
 export {
     // Catch any errors thrown by the Layout component.
@@ -55,6 +56,7 @@ function RootLayoutNav() {
         <QueryClientProvider client={queryClient}>
             <ThemeProvider value={valueTheme}>
                 <Slot />
+                <Toast />
             </ThemeProvider>
         </QueryClientProvider>
     );

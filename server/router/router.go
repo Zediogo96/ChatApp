@@ -15,6 +15,10 @@ func InitRouter(userHandler *user.Handler) {
 	r.GET("/user/:username", userHandler.GetUserByUsername)
 	r.POST("/login", userHandler.Login)
 
+	// setup default route
+	r.NoRoute(func(c *gin.Context) {
+		c.JSON(404, gin.H{"message": "Not Found"})
+	})
 }
 
 func Start(addr string) error {
