@@ -53,7 +53,9 @@ const Login: React.FC = () => {
             });
         },
         onSuccess: async (data) => {
-            console.log("data > ", data);
+            setAuthenticated();
+            router.replace("/" as never);
+
             showFeedbackToast({
                 title: "Authentication Success",
                 message: "You have successfully logged in.",
@@ -130,9 +132,7 @@ const Login: React.FC = () => {
                 </TouchableOpacity>
 
                 <Link href={"/Signup"} style={{ marginTop: 10, fontSize: 12 }}>
-                    <Text style={{ color: "dodgerblue" }}>
-                        Don't have an account?
-                    </Text>
+                    <Text style={{ color: "dodgerblue" }}>Don't have an account?</Text>
                 </Link>
             </View>
         </View>

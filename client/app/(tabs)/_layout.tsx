@@ -23,7 +23,15 @@ export default function AppLayout() {
                     ),
                 }}
             />
-            
+            <Tabs.Screen
+                name="ChatRooms"
+                options={{
+                    title: "Chat_Rooms",
+                    tabBarIcon: ({ color }) => (
+                        <FontAwesome size={28} name="comments" color={color} />
+                    ),
+                }}
+            />
         </Tabs>
     );
 }
