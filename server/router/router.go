@@ -3,6 +3,7 @@ package router
 import (
 	"server/internal/middleware"
 	"server/internal/user"
+	"server/internal/ws"
 
 	"github.com/gin-gonic/gin"
 )
@@ -14,6 +15,12 @@ func InitRouter(userHandler *user.Handler) {
 
 	r.POST("/signup", userHandler.CreateUser)
 	r.POST("/login", userHandler.Login)
+
+	// Initialize the websocket route
+	r.GET("/ws/:username", func(c *gin.Context) {
+		username := c.Param("username")
+		ws.ServeWs(c.Writer, c.Request, username)
+	})
 
 	// Initialize the middleware for protected routes, routes above this line are not protected
 	r.Use(middleware.AuthMiddleware())

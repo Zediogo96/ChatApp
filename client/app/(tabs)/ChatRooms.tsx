@@ -1,10 +1,26 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React, { useEffect } from "react";
+
+import useWebSocket, { ReadyState } from "react-native-use-websocket";
+import { localhost } from "@/constants";
 
 const ChatRooms = () => {
+    const { sendMessage, lastMessage, readyState } = useWebSocket(
+        `ws://${localhost}:8080/ws/zediogo96`,
+        {
+            shouldReconnect: (closeEvent) => true,
+        }
+    );
+
+    useEffect(() => {
+        console.log("Last message: ", lastMessage?.data);
+    }, [lastMessage]);
+
     return (
         <View style={styles.container}>
-            <Text>ChatRooms</Text>
+            <TouchableOpacity onPress={() => sendMessage("Hello")}>
+                <Text>Send Message</Text>
+            </TouchableOpacity>
         </View>
     );
 };
