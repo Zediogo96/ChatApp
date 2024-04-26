@@ -4,6 +4,7 @@ import { Platform } from "react-native";
 // 10.0.2.2 is the Android emulator's alias to localhost
 import { localhost } from "@/constants";
 import useAuthStore from "@/store/authStore";
+import { storage } from "@/utils/localStorage";
 
 const api = axios.create({
     baseURL: `http://${localhost}:8080`,
@@ -13,7 +14,7 @@ const api = axios.create({
 // Add a request interceptor to inject JWT token into request headers
 api.interceptors.request.use(
     (config) => {
-        const jwtToken = localStorage.getItem("jwt_token");
+        const jwtToken = storage.getString("jwt_token");
 
         // If the token exists, add it to the request headers
         if (jwtToken) config.headers.Authorization = `Bearer ${jwtToken}`;

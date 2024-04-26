@@ -44,8 +44,7 @@ const Login: React.FC = () => {
 
             return response.data;
         },
-        onError: (error) => {
-
+        onError: async (error) => {
             showFeedbackToast({
                 title: "Authentication Error",
                 message: error.message,
@@ -53,7 +52,7 @@ const Login: React.FC = () => {
             });
         },
         onSuccess: async (data) => {
-            setAuthenticated();
+            setAuthenticated(data.token);
             router.replace("/" as never);
 
             showFeedbackToast({
