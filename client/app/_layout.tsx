@@ -52,6 +52,8 @@ function RootLayoutNav() {
 
     const valueTheme = colorScheme === "dark" ? DarkTheme : DefaultTheme;
 
+    
+
     return (
         <QueryClientProvider client={queryClient}>
             <ThemeProvider value={valueTheme}>

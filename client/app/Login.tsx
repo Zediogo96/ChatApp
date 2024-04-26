@@ -45,7 +45,7 @@ const Login: React.FC = () => {
             return response.data;
         },
         onError: (error) => {
-            console.log("error", error.message);
+
             showFeedbackToast({
                 title: "Authentication Error",
                 message: error.message,

@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 
 import { router } from "expo-router";
+import { storage } from "@/utils/localStorage";
 
 type State = {
     isAuthenticated: boolean;
@@ -27,6 +28,10 @@ const useAuthStore = create(
             set((state) => {
                 state.isAuthenticated = true;
             });
+
+
+            const test = storage.getBoolean("isAuthenticated");
+
 
             router.replace("/" as never);
         },
