@@ -1,5 +1,6 @@
 import Header from "@/components/Home/Header";
 import MainFrame from "@/components/Home/MainFrame";
+import NewMessage from "@/components/Home/NewMessage";
 import SubHeader from "@/components/Home/SubHeader";
 import Colors from "@/constants/Colors";
 import { View, StyleSheet } from "react-native";
@@ -10,6 +11,8 @@ export default function Index() {
             <Header />
             <SubHeader />
             <MainFrame />
+
+            <NewMessage />
         </View>
     );
 }
