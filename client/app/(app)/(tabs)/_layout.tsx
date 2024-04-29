@@ -6,8 +6,6 @@ import { storage } from "@/utils/localStorage";
 export default function AppLayout() {
     const token = storage.getString("jwt_token");
 
-    console.log("token", token);
-
     if (token === null) {
         return <Redirect href="/Login" />;
     }

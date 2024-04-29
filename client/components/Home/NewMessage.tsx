@@ -10,6 +10,7 @@ import Animated, {
 import { Entypo } from "@expo/vector-icons";
 
 import Colors from "@/constants/Colors";
+import { router } from "expo-router";
 
 const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
 
@@ -27,7 +28,10 @@ const NewMessage = () => {
     });
 
     return (
-        <AnimatedTouchableOpacity style={[styles.container, animatedStyle]}>
+        <AnimatedTouchableOpacity
+            onPress={() => router.replace("/NewMessage" as never)}
+            style={[styles.container, animatedStyle]}
+        >
             <View style={styles.innerContainer}>
                 <Entypo name="plus" size={30} color={Colors.mainTheme.darkOlive} />
             </View>

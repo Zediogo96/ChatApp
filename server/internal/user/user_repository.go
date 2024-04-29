@@ -71,7 +71,5 @@ func (r *repository) GetUserByUsername(ctx context.Context, username string) (*U
 		return nil, err
 	}
 
-	fmt.Println(u)
-
 	return &u, nil
 }

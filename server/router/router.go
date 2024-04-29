@@ -1,6 +1,7 @@
 package router
 
 import (
+	"server/internal/messages"
 	"server/internal/middleware"
 	"server/internal/user"
 	"server/internal/ws"
@@ -10,7 +11,7 @@ import (
 
 var r *gin.Engine
 
-func InitRouter(userHandler *user.Handler) {
+func InitRouter(userHandler *user.Handler, messagesHandler *messages.Handler) {
 	r = gin.Default()
 
 	r.POST("/signup", userHandler.CreateUser)
@@ -26,6 +27,7 @@ func InitRouter(userHandler *user.Handler) {
 	r.Use(middleware.AuthMiddleware())
 
 	r.GET("/user/:username", userHandler.GetUserByUsername)
+	r.GET("/messages/last/:id", messagesHandler.GetLastMessages)
 
 	// setup default route
 	r.NoRoute(func(c *gin.Context) {

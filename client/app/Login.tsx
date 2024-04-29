@@ -18,7 +18,7 @@ import ErrorText from "@/components/ErrorText";
 import api from "@/api";
 
 interface FormData {
-    email: string;
+    username: string;
     password: string;
 }
 
@@ -35,16 +35,18 @@ const Login: React.FC = () => {
     const loginMutation = useMutation({
         mutationKey: ["login"],
         mutationFn: async () => {
-            const { email, password } = getValues();
+            const { username, password } = getValues();
 
             const response = await api.post("/login", {
-                username: "zediogo96",
-                password: "123",
+                username: username,
+                password: password,
             });
-
+            
             return response.data;
         },
         onError: async (error) => {
+
+
             showFeedbackToast({
                 title: "Authentication Error",
                 message: error.message,
@@ -67,7 +69,7 @@ const Login: React.FC = () => {
         <View style={s.container}>
             <Controller
                 control={control}
-                name="email"
+                name="username"
                 rules={{
                     required: {
                         value: true,
@@ -84,8 +86,8 @@ const Login: React.FC = () => {
                             onChangeText={onChange}
                             value={value}
                         />
-                        {errors.email && (
-                            <ErrorText errorMessage={errors.email.message} />
+                        {errors.username && (
+                            <ErrorText errorMessage={errors.username.message} />
                         )}
                     </View>
                 )}

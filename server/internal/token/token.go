@@ -36,3 +36,9 @@ func ValidateToken(tokenString string) (*JWTClaims, error) {
 
 	return claims, nil
 }
+
+// GenerateToken generates a JWT token
+func GenerateToken(claims JWTClaims) (string, error) {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString([]byte(os.Getenv(constants.JWT_SECRET)))
+}

@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 
 import useWebSocket, { ReadyState } from "react-native-use-websocket";
 import { localhost } from "@/constants";
+import useAuthStore from "@/store/authStore";
 
 const ChatRooms = () => {
     const { sendMessage, lastMessage, readyState } = useWebSocket(
@@ -12,6 +13,9 @@ const ChatRooms = () => {
         }
     );
 
+    // Just for now
+    const logout = useAuthStore((state) => state.setUnauthenticated);
+
     useEffect(() => {
         console.log("Last message: ", lastMessage?.data);
     }, [lastMessage]);
@@ -20,6 +24,10 @@ const ChatRooms = () => {
         <View style={styles.container}>
             <TouchableOpacity onPress={() => sendMessage("Hello")}>
                 <Text>Send Message</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => logout()}>
+                <Text>Logout</Text>
             </TouchableOpacity>
         </View>
     );

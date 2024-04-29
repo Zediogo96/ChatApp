@@ -37,16 +37,30 @@ const MainFrame = () => {
                             borderWidth: 1,
                         }}
                     />
-                    <Text
-                        style={{
-                            fontSize: 12,
-                            color: Colors.mainTheme.oliveGreen,
-                            fontWeight: "bold",
-                            marginLeft: 10,
-                        }}
-                    >
-                        {user.name}
-                    </Text>
+
+                    <View style={{ flex: 1 }}>
+                        <Text
+                            style={{
+                                fontSize: 12,
+                                color: Colors.mainTheme.oliveGreen,
+                                fontWeight: "bold",
+                                marginLeft: 10,
+                            }}
+                        >
+                            {user.name}
+                        </Text>
+                        {/* Last Message  */}
+                        <Text
+                            style={{
+                                fontSize: 12,
+                                color: Colors.mainTheme.oliveGreen,
+                                marginLeft: 10,
+                            }}
+                        >
+                            {user.lastMessage}
+                        </Text>
+                        
+                    </View>
                 </View>
 
                 <View style={{ width: 20, height: 20 }} />

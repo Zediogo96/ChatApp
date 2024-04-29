@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"server/db"
+	"server/internal/messages"
 	"server/internal/user"
 	"server/router"
 
@@ -29,7 +30,11 @@ func main() {
 	userService := user.NewService(userRepository)       // user.NewService() returns a pointer to a service struct
 	userHandler := user.NewHandler(userService)          // user.NewHandler() returns a pointer to a handler struct
 
-	router.InitRouter(userHandler) // router.InitRouter() initializes the router
-	router.Start(":8080")          // router.Start() starts the server
+	messagesRepository := messages.NewRepository(dbConn.GetDB())
+	messagesService := messages.NewService(messagesRepository)
+	messagesHandler := messages.NewHandler(messagesService)
+
+	router.InitRouter(userHandler, messagesHandler) // router.InitRouter() initializes the router with the userHandler
+	router.Start(":8080")                           // router.Start() starts the server
 
 }
