@@ -1,8 +1,8 @@
 package messages
 
 import (
-	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -18,12 +18,17 @@ func NewHandler(s Service) *Handler {
 func (h *Handler) GetLastMessages(c *gin.Context) {
 	var u MessagesRequest
 
-	if err := c.ShouldBindJSON(&u); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	id := c.Query("id")
+	limit := c.Query("limit")
+
+	if id == "" || limit == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "id and limit are required"})
 		return
 	}
 
-	fmt.Printf("ReceiverID: %d, Limit: %d\n", u.ReceiverID, u.Limit)
+	// convert the id to an integer
+	u.ReceiverID, _ = strconv.Atoi(id)
+	u.Limit, _ = strconv.Atoi(limit)
 
 	res, err := h.Service.GetLastMessages(c.Request.Context(), u.ReceiverID, u.Limit)
 

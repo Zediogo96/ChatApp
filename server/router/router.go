@@ -27,7 +27,7 @@ func InitRouter(userHandler *user.Handler, messagesHandler *messages.Handler) {
 	r.Use(middleware.AuthMiddleware())
 
 	r.GET("/user/:username", userHandler.GetUserByUsername)
-	r.GET("/messages/last/:id", messagesHandler.GetLastMessages)
+	r.GET("/messages/last", messagesHandler.GetLastMessages)
 
 	// setup default route
 	r.NoRoute(func(c *gin.Context) {

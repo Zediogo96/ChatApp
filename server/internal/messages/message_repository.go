@@ -25,10 +25,12 @@ func NewRepository(db DBTX) Repository {
 	return &repository{db: db}
 }
 
-func (r *repository) GetLastMessages(ctx context.Context, limit int, receiver_id int) ([]*Message, error) {
+func (r *repository) GetLastMessages(ctx context.Context, receiver_id int, limit int) ([]*Message, error) {
 	var messages []*Message
 
-	query := fmt.Sprintf("SELECT * FROM messages WHERE receiver_id = %d ORDER BY created_at DESC LIMIT %d", receiver_id, limit)
+	fmt.Println("receiver_id", receiver_id)
+
+	query := fmt.Sprintf("SELECT * FROM message WHERE receiver_id = %d ORDER BY created_at DESC LIMIT %d", receiver_id, limit)
 
 	rows, err := r.db.QueryContext(ctx, query)
 
