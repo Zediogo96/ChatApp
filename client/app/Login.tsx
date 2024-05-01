@@ -41,19 +41,17 @@ const Login: React.FC = () => {
                 username: username,
                 password: password,
             });
-            
+
             return response.data;
         },
         onError: async (error) => {
-
-
             showFeedbackToast({
                 title: "Authentication Error",
                 message: error.message,
                 type: "error",
             });
         },
-        onSuccess: async (data) => {
+        onSuccess: async (data: LoginResponse) => {
             setAuthenticated(data.token);
             router.replace("/" as never);
 
