@@ -52,7 +52,7 @@ const Login: React.FC = () => {
             });
         },
         onSuccess: async (data: LoginResponse) => {
-            setAuthenticated(data.token);
+            setAuthenticated(data);
             router.replace("/" as never);
 
             showFeedbackToast({

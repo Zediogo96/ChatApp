@@ -16,6 +16,12 @@ type User struct {
 	Updated_at string `json:"updated_at" db:"updated_at"`
 }
 
+type UserSimpleDisplay struct {
+	ID        int64  `json:"id" db:"id"`
+	Username  string `json:"username" db:"username"`
+	AvatarURL string `json:"avatar_url" db:"avatar_url"`
+}
+
 type CreateUserRequest struct {
 	Username  string `json:"username"`
 	Email     string `json:"email"`

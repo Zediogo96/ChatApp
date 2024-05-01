@@ -18,6 +18,10 @@ CREATE TABLE "message" (
     
     "content_type" varchar(32) NOT NULL,
     "content" text NOT NULL,
+
+    -- status can be 'sent', 'read' 
+    "status" varchar(32) DEFAULT 'not_read' CHECK ("status" IN ('not_read', 'read')),
+
     "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

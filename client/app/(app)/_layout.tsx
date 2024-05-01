@@ -23,7 +23,7 @@ export default function AppLayout() {
                     animation: Platform.OS == "android" ? "slide_from_bottom" : "default",
                     animationDuration: 500,
                 }}
-            />{" "}
+            />
         </Stack>
     );
 }

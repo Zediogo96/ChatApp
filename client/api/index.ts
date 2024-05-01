@@ -1,5 +1,4 @@
 import axios from "axios";
-import { Platform } from "react-native";
 
 // 10.0.2.2 is the Android emulator's alias to localhost
 import { localhost } from "@/constants";
@@ -17,7 +16,7 @@ api.interceptors.request.use(
         const jwtToken = storage.getString("jwt_token");
 
         // If the token exists, add it to the request headers
-        if (jwtToken) config.headers.Authorization = `Bearer ${jwtToken}`;
+        if (jwtToken) config.headers.Authorization = jwtToken;
 
         return config;
     },

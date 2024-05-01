@@ -17,7 +17,7 @@ func NewService(r Repository) Service {
 	}
 }
 
-func (s *service) GetLastMessages(c context.Context, receiver_id int, limit int) ([]*Message, error) {
+func (s *service) GetLastMessages(c context.Context, receiver_id int, limit int) ([]*MessageWithSender, error) {
 	ctx, cancel := context.WithTimeout(c, s.timeout)
 	defer cancel()
 

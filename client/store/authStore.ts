@@ -26,6 +26,7 @@ const useAuthStore = create(
         ...initialState,
         setIsAuthenticated: async (data: LoginResponse) => {
             set((state) => {
+                console.log("data", data);
                 state.isAuthenticated = true;
                 state.jwt_token = data.token;
 
@@ -51,6 +52,9 @@ const useAuthStore = create(
                 state.jwt_token = null;
                 state.user = null;
             });
+
+            // remove the token from local storage
+            storage.delete("jwt_token");
 
             router.replace("Login" as never);
         },
