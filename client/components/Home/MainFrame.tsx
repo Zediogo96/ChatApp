@@ -15,13 +15,10 @@ const MainFrame = () => {
 
     const state = useAuthStore((state) => state);
 
-    // console.log("Messages: ", messages);
-
     const renderItem = useCallback(
         // TODO: Type User Properly
         ({ item }: { item: MessageWithSender }) => {
-            console.log("User: ", item);
-            if (!isLoading)
+            if (isLoading)
                 return (
                     <SkeletonPlaceholder highlightColor="#f0f0f0">
                         <SkeletonPlaceholder.Item flexDirection="row" alignItems="center">

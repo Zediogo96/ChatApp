@@ -13,7 +13,7 @@ const api = axios.create({
 // Add a request interceptor to inject JWT token into request headers
 api.interceptors.request.use(
     (config) => {
-        const jwtToken = storage.getString("jwt_token");
+        const jwtToken = useAuthStore.getState().jwt_token;
 
         // If the token exists, add it to the request headers
         if (jwtToken) config.headers.Authorization = jwtToken;
