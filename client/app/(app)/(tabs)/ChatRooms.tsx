@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { useEffect } from "react";
 
-import useWebSocket, { ReadyState } from "react-native-use-websocket";
+import useWebSocket from "react-native-use-websocket";
 import { localhost } from "@/constants";
 import useAuthStore from "@/store/authStore";
 
@@ -13,7 +13,6 @@ const ChatRooms = () => {
         }
     );
 
-    // Just for now
     const logout = useAuthStore((state) => state.setUnauthenticated);
 
     useEffect(() => {

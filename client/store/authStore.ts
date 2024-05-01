@@ -1,19 +1,14 @@
-import { create } from "zustand";
-import { immer } from "zustand/middleware/immer";
+import { create, useStore } from "zustand";
 
 import { router } from "expo-router";
-import { storage } from "@/utils/localStorage";
+import { MMKVStorage, storage } from "@/utils/localStorage";
+import { createJSONStorage, persist } from "zustand/middleware";
 
-type State = {
+interface State {
     isAuthenticated: boolean;
     jwt_token: string | null;
     user: User | null;
-};
-
-type Actions = {
-    setIsAuthenticated: (data: LoginResponse) => void;
-    setUnauthenticated: () => void;
-};
+}
 
 const initialState: State = {
     isAuthenticated: false,
@@ -21,44 +16,49 @@ const initialState: State = {
     user: null,
 };
 
-const useAuthStore = create(
-    immer<State & Actions>((set) => ({
-        ...initialState,
-        setIsAuthenticated: async (data: LoginResponse) => {
-            set((state) => {
-                console.log("data", data);
-                state.isAuthenticated = true;
-                state.jwt_token = data.token;
+const persistConfig = {
+    name: "my-storage-persist-name",
+    storage: createJSONStorage(() => MMKVStorage),
+};
 
-                state.user = {
-                    id: data.id,
-                    username: data.username,
-                    email: data.email,
-                    bio: data.bio,
-                    avatar_url: data.avatar_url,
-                    created_at: data.created_at,
-                    updated_at: data.updated_at,
-                };
-            });
+type Actions = {
+    setIsAuthenticated: (data: LoginResponse) => void;
+    setUnauthenticated: () => void;
+};
 
-            // if there's a token, store it in local storage
-            if (data.token) storage.set("jwt_token", data.token);
+type Store = State & Actions;
 
-            router.replace("/" as never);
-        },
-        setUnauthenticated: async () => {
-            set((state) => {
-                state.isAuthenticated = false;
-                state.jwt_token = null;
-                state.user = null;
-            });
+// Function currying is a workaround to allow skipping some generics when calling a function with multiple generics
+const useAuthStore = create<Store>()(
+    persist(
+        (set, get) => ({
+            ...initialState,
+            setIsAuthenticated: (data: LoginResponse) => {
+                set({
+                    isAuthenticated: true,
+                    jwt_token: data.token,
+                    user: {
+                        id: data.id,
+                        username: data.username,
+                        email: data.email,
+                        bio: data.bio,
+                        avatar_url: data.avatar_url,
+                        created_at: data.created_at,
+                        updated_at: data.updated_at,
+                    },
+                });
 
-            // remove the token from local storage
-            storage.delete("jwt_token");
+                router.replace("/");
+            },
+            setUnauthenticated: () => {
+                set({ ...initialState });
+                storage.delete("my-storage-persist-name");
+                router.replace("/Login");
+            },
+        }),
 
-            router.replace("Login" as never);
-        },
-    }))
+        persistConfig
+    )
 );
 
 export default useAuthStore;
