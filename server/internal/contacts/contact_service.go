@@ -28,3 +28,15 @@ func (s *service) GetFavouriteContacts(c context.Context, user_id int) ([]*Conta
 
 	return contacts, nil
 }
+
+func (s *service) GetBlockedContacts(c context.Context, user_id int) ([]*Contact, error) {
+	ctx, cancel := context.WithTimeout(c, s.timeout)
+	defer cancel()
+
+	contacts, err := s.repository.GetBlockedContacts(ctx, user_id)
+	if err != nil {
+		return nil, err
+	}
+
+	return contacts, nil
+}

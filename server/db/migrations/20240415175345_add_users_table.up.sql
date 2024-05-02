@@ -83,5 +83,5 @@ INSERT INTO "contact" (user_id, contact_id, is_favourite) VALUES
 INSERT INTO "contact" (user_id, contact_id, is_favourite) VALUES 
     (5, 3, TRUE);
 
--- INSERT INTO "contact" (user_id, contact_id, is_favourite) VALUES 
---     (5, 4, TRUE);
+INSERT INTO "contact" (user_id, contact_id, is_blocked) VALUES 
+    (5, 4, TRUE);

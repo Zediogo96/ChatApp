@@ -29,8 +29,13 @@ func InitRouter(userHandler *user.Handler, messagesHandler *messages.Handler, co
 	r.Use(middleware.AuthMiddleware())
 
 	r.GET("/user/:username", userHandler.GetUserByUsername)
+
+	// Message Routes
 	r.GET("/messages/last", messagesHandler.GetLastMessages)
+
+	// Contact Routes
 	r.GET("/favourite-contacts/:user_id", contactsHandler.GetFavouriteContacts)
+	r.GET("/blocked-contacts/:user_id", contactsHandler.GetBlockedContacts)
 
 	// setup default route
 	r.NoRoute(func(c *gin.Context) {

@@ -29,10 +29,53 @@ func NewRepository(db DBTX) Repository {
 func (r *repository) GetFavouriteContacts(c context.Context, user_id int) ([]*Contact, error) {
 
 	query := fmt.Sprintf(`
+   SELECT u.id, u.username, u.email, u.avatar_url, u.bio, u.created_at, u.updated_at
+   FROM contact c
+   JOIN users u ON c.contact_id = u.id
+   WHERE c.user_id = %d AND c.is_favourite = TRUE
+`, user_id)
+
+	rows, err := r.db.QueryContext(c, query)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	contacts := make([]*Contact, 0)
+
+	for rows.Next() {
+
+		c := &Contact{User: &user.Pub_User{}}
+
+		err := rows.Scan(
+			&c.User.ID,
+			&c.User.Username,
+			&c.User.Email,
+			&c.User.AvatarURL,
+			&c.User.Bio,
+			&c.User.Created_at,
+			&c.User.Updated_at,
+		)
+
+		if err != nil {
+			return nil, err
+		}
+
+		contacts = append(contacts, c)
+	}
+
+	return contacts, nil
+}
+
+func (r *repository) GetBlockedContacts(c context.Context, user_id int) ([]*Contact, error) {
+
+	query := fmt.Sprintf(`
 	   SELECT u.id, u.username, u.email, u.avatar_url, u.bio, u.created_at, u.updated_at
-	   FROM contact c
-	   JOIN users u ON c.contact_id = u.id
-	   WHERE c.user_id = %d
+	   FROM contact
+	   JOIN users u ON contact.contact_id = u.id
+	   WHERE contact.user_id = %d AND contact.is_blocked = TRUE
 	`, user_id)
 
 	rows, err := r.db.QueryContext(c, query)

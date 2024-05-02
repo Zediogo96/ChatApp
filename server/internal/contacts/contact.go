@@ -11,10 +11,12 @@ type Contact struct {
 
 type Repository interface {
 	GetFavouriteContacts(c context.Context, user_id int) ([]*Contact, error)
+	GetBlockedContacts(c context.Context, user_id int) ([]*Contact, error)
 }
 
 type Service interface {
 	GetFavouriteContacts(c context.Context, user_id int) ([]*Contact, error)
+	GetBlockedContacts(c context.Context, user_id int) ([]*Contact, error)
 }
 
 type MessagesRequest struct {
