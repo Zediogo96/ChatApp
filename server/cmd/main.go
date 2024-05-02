@@ -3,8 +3,11 @@ package main
 import (
 	"log"
 	"server/db"
+
+	"server/internal/contacts"
 	"server/internal/messages"
 	"server/internal/user"
+
 	"server/router"
 
 	"github.com/joho/godotenv"
@@ -34,7 +37,11 @@ func main() {
 	messagesService := messages.NewService(messagesRepository)
 	messagesHandler := messages.NewHandler(messagesService)
 
-	router.InitRouter(userHandler, messagesHandler) // router.InitRouter() initializes the router with the userHandler
-	router.Start(":8080")                           // router.Start() starts the server
+	contactRepository := contacts.NewRepository(dbConn.GetDB())
+	contactService := contacts.NewService(contactRepository)
+	contactHandler := contacts.NewHandler(contactService)
+
+	router.InitRouter(userHandler, messagesHandler, contactHandler) // router.InitRouter() initializes the router with the handlers
+	router.Start(":8080")                                           // router.Start() starts the server
 
 }

@@ -11,7 +11,7 @@ type Message struct {
 	SenderID   int64 `json:"sender_id" db:"sender_id"`
 	ReceiverID int64 `json:"receiver_id" db:"receiver_id"`
 
-	Status string `json:"status" db:"status"`
+	Status string `json:"status" db:"status"` // read, not_read
 
 	ContentType string `json:"content_type" db:"content_type"`
 	Content     string `json:"content" db:"content"`
@@ -22,7 +22,8 @@ type Message struct {
 
 type MessageWithSender struct {
 	Message
-	Sender *user.UserSimpleDisplay `json:"sender"`
+	Sender       *user.UserSimpleDisplay `json:"sender"`
+	NotReadCount int                     `json:"unread_count"`
 }
 
 type Repository interface {

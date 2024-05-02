@@ -16,7 +16,6 @@ const MainFrame = () => {
     const state = useAuthStore((state) => state);
 
     const renderItem = useCallback(
-        // TODO: Type User Properly
         ({ item }: { item: MessageWithSender }) => {
             if (isLoading)
                 return (

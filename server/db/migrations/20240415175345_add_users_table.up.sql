@@ -26,12 +26,24 @@ CREATE TABLE "message" (
     "updated_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE "contact" (
+    "id" bigserial PRIMARY KEY,
+    "user_id" bigint NOT NULL REFERENCES "users"("id"),
+    "contact_id" bigint NOT NULL REFERENCES "users"("id"),
+
+    "is_blocked" boolean DEFAULT FALSE,
+    "is_favourite" boolean DEFAULT FALSE,
+
+    "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Add some users
 INSERT INTO "users" (username, email, password, bio, avatar_url) VALUES 
     ('Satoru Gojo', 'satorugojo@gmail.com', '$2a$10$GzAoxztS.fTf.coNPexMGezwWoiyMRvexITnAzMgMn.o.9ukITUEu', 'Strongest Jujutsu Sorcerer', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBW7LhDvwdvi-ZIWDmIjAne_w8ZFQFsWycZqb4qkonRQ&s');
 
 INSERT INTO "users" (username, email, password, bio, avatar_url) VALUES 
-    ('Nobara K.', 'nobarakugisaki@gmail.com', '$2a$10$GzAoxztS.fTf.coNPexMGezwWoiyMRvexITnAzMgMn.o.9ukITUEu', 'Best Waifu Ever', 'https://pbs.twimg.com/profile_images/137056328$2a$10$GzAoxztS.fTf.coNPexMGezwWoiyMRvexITnAzMgMn.o.9ukITUEu3002496/g_Q7dwBw_400x400.jpg');
+    ('Nobara K.', 'nobarakugisaki@gmail.com', '$2a$10$GzAoxztS.fTf.coNPexMGezwWoiyMRvexITnAzMgMn.o.9ukITUEu', 'Best Waifu Ever', 'https://i.pinimg.com/736x/b9/2a/78/b92a7817137232a035adea9e8bbf60a5.jpg');
 
 INSERT INTO "users" (username, email, password, bio, avatar_url) VALUES 
     ('Suguru Geto', 'suguru_geto@gmail.com', '$2a$10$GzAoxztS.fTf.coNPexMGezwWoiyMRvexITnAzMgMn.o.9ukITUEu', 'Cursed Spirit User', 'https://miro.medium.com/v2/resize:fit:736/1*GHQ2nQfaZyF81STYtlmAyA.jpeg');
@@ -48,6 +60,9 @@ INSERT INTO "message" (sender_id, receiver_id, content_type, content) VALUES
     (1, 5, 'text', 'Hey Zé, how are you doing?');
 
 INSERT INTO "message" (sender_id, receiver_id, content_type, content) VALUES 
+    (1, 5, 'text', 'Been trying to talk to you about the new episode of JJK!');
+
+INSERT INTO "message" (sender_id, receiver_id, content_type, content) VALUES 
     (2, 5, 'text', 'Hey Zé, have you seen the new episode of JJK?');
 
 INSERT INTO "message" (sender_id, receiver_id, content_type, content) VALUES 
@@ -55,3 +70,18 @@ INSERT INTO "message" (sender_id, receiver_id, content_type, content) VALUES
 
 INSERT INTO "message" (sender_id, receiver_id, content_type, content) VALUES 
     (4, 5, 'text', 'Boas Zé, tudo bem?');
+
+
+-- Add some contacts
+
+INSERT INTO "contact" (user_id, contact_id, is_favourite) VALUES 
+    (5, 1, TRUE);
+
+INSERT INTO "contact" (user_id, contact_id, is_favourite) VALUES 
+    (5, 2, TRUE);
+
+INSERT INTO "contact" (user_id, contact_id, is_favourite) VALUES 
+    (5, 3, TRUE);
+
+-- INSERT INTO "contact" (user_id, contact_id, is_favourite) VALUES 
+--     (5, 4, TRUE);

@@ -1,8 +1,10 @@
 package router
 
 import (
-	"server/internal/messages"
 	"server/internal/middleware"
+
+	"server/internal/contacts"
+	"server/internal/messages"
 	"server/internal/user"
 	"server/internal/ws"
 
@@ -11,7 +13,7 @@ import (
 
 var r *gin.Engine
 
-func InitRouter(userHandler *user.Handler, messagesHandler *messages.Handler) {
+func InitRouter(userHandler *user.Handler, messagesHandler *messages.Handler, contactsHandler *contacts.Handler) {
 	r = gin.Default()
 
 	r.POST("/signup", userHandler.CreateUser)
@@ -28,6 +30,7 @@ func InitRouter(userHandler *user.Handler, messagesHandler *messages.Handler) {
 
 	r.GET("/user/:username", userHandler.GetUserByUsername)
 	r.GET("/messages/last", messagesHandler.GetLastMessages)
+	r.GET("/favourite-contacts/:user_id", contactsHandler.GetFavouriteContacts)
 
 	// setup default route
 	r.NoRoute(func(c *gin.Context) {
