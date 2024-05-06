@@ -6,6 +6,7 @@ import Colors from "@/constants/Colors";
 
 import { ShadowedView, shadowStyle } from "react-native-fast-shadow";
 import Animated, { FadeIn } from "react-native-reanimated";
+import { router } from "expo-router";
 
 const { height } = Dimensions.get("window");
 
@@ -26,33 +27,38 @@ const Header = () => {
             <Animated.Text entering={FadeIn.duration(1000)} style={s.title}>
                 Messages
             </Animated.Text>
-            <ShadowedView
-                style={[
-                    s.inputContainer,
-                    isFocused
-                        ? shadowStyle({
-                              opacity: 1,
-                              radius: 1,
-                              offset: [1, 1],
-                              color: "black",
-                          })
-                        : shadowStyle({
-                              opacity: 0.5,
-                              radius: 1,
-                              offset: [1, 1],
-                              color: "black",
-                          }),
-                ]}
-            >
-                <Ionicons name="search" size={24} color={Colors.mainTheme.oliveGreen} />
-                <TextInput
-                    placeholderTextColor={Colors.mainTheme.oliveGreen}
-                    onFocus={() => setIsFocused(true)}
-                    onBlur={() => setIsFocused(false)}
-                    style={s.input}
-                    placeholder="Search for messages"
-                />
-            </ShadowedView>
+            <Animated.View sharedTransitionTag="searchInput">
+                <ShadowedView
+                    style={[
+                        s.inputContainer,
+                        isFocused
+                            ? shadowStyle({
+                                  opacity: 1,
+                                  radius: 1,
+                                  offset: [1, 1],
+                                  color: "black",
+                              })
+                            : shadowStyle({
+                                  opacity: 0.5,
+                                  radius: 1,
+                                  offset: [1, 1],
+                                  color: "black",
+                              }),
+                    ]}
+                >
+                    <Ionicons
+                        name="search"
+                        size={24}
+                        color={Colors.mainTheme.oliveGreen}
+                    />
+                    <TextInput
+                        placeholderTextColor={Colors.mainTheme.oliveGreen}
+                        onFocus={() => router.push("/home/SearchPage")}
+                        style={s.input}
+                        placeholder="Search for messages"
+                    />
+                </ShadowedView>
+            </Animated.View>
         </ShadowedView>
     );
 };

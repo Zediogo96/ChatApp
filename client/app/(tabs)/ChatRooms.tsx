@@ -15,10 +15,6 @@ const ChatRooms = () => {
 
     const logout = useAuthStore((state) => state.setUnauthenticated);
 
-    useEffect(() => {
-        console.log("Last message: ", lastMessage?.data);
-    }, [lastMessage]);
-
     return (
         <View style={styles.container}>
             <TouchableOpacity onPress={() => sendMessage("Hello")}>

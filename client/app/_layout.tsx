@@ -1,11 +1,7 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import {
-    DarkTheme,
-    DefaultTheme,
-    ThemeProvider,
-} from "@react-navigation/native";
+import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { Slot } from "expo-router";
+import { Slot, Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 
@@ -27,6 +23,12 @@ export default function RootLayout() {
         ...FontAwesome.font,
     });
 
+    const queryClient = new QueryClient();
+
+    const colorScheme = useColorScheme();
+
+    const valueTheme = colorScheme === "dark" ? DarkTheme : DefaultTheme;
+
     // Expo Router uses Error Boundaries to catch errors in the navigation tree.
     useEffect(() => {
         if (error) throw error;
@@ -42,22 +44,12 @@ export default function RootLayout() {
         return null;
     }
 
-    return <RootLayoutNav />;
-}
-
-function RootLayoutNav() {
-    const queryClient = new QueryClient();
-
-    const colorScheme = useColorScheme();
-
-    const valueTheme = colorScheme === "dark" ? DarkTheme : DefaultTheme;
-
-    
-
     return (
         <QueryClientProvider client={queryClient}>
             <ThemeProvider value={valueTheme}>
-                <Slot />
+                <Stack screenOptions={{ headerShown: false }}>
+                    <Stack.Screen name="(tabs)" />
+                </Stack>
                 <Toast />
             </ThemeProvider>
         </QueryClientProvider>

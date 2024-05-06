@@ -48,7 +48,7 @@ const useAuthStore = create<Store>()(
                     },
                 });
 
-                router.replace("/");
+                router.replace("/home" as never);
             },
             setUnauthenticated: () => {
                 set({ ...initialState });

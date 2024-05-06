@@ -5,7 +5,7 @@ import SubHeader from "@/components/Home/SubHeader";
 import Colors from "@/constants/Colors";
 import { View, StyleSheet } from "react-native";
 
-export default function Index() {
+export default function HomePage() {
     return (
         <View style={s.container}>
             <Header />

@@ -55,7 +55,7 @@ const Login: React.FC = () => {
         },
         onSuccess: async (data: LoginResponse) => {
             setAuthenticated(data);
-            router.replace("/" as never);
+            router.replace("home/index" as never);
 
             showFeedbackToast({
                 title: "Authentication Success",
