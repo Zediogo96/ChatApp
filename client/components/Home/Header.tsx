@@ -91,6 +91,7 @@ const s = StyleSheet.create({
         borderRadius: 15,
         alignItems: "center",
         columnGap: 10,
+        height: 50,
     },
     input: {
         flex: 1,
