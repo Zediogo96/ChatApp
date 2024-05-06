@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { StyleSheet, TouchableOpacity, View, Dimensions, ScrollView } from "react-native";
 import Colors from "@/constants/Colors";
 import Animated, { FadeIn, FadeInDown, FadeInLeft } from "react-native-reanimated";
 import { fakeData } from "@/constants/FakeData";
+import useFavouriteContacts from "@/api/react-query/contacts";
+import SkeletonPlaceholder from "react-native-skeleton-placeholder";
+import { ShadowedView, shadowStyle } from "react-native-fast-shadow";
 
 const { width, height } = Dimensions.get("window");
 
@@ -12,49 +15,78 @@ type ContactAvatarProps = {
     avatar: string;
 };
 
+const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
+
 const ContactAvatar: React.FC<ContactAvatarProps> = ({ index, name, avatar }) => {
     return (
-        <TouchableOpacity style={sc.container}>
-            <Animated.Image
-                entering={FadeInLeft.duration(350).delay(1000 + index * 150)}
-                src={avatar}
-                style={{
-                    width: 50,
-                    height: 50,
-                    borderRadius: 30,
-                    borderWidth: 0.8,
-                    borderColor: Colors.mainTheme.oliveGreen,
-                }}
-            />
-            <Animated.Text
-                entering={FadeIn.duration(1000).delay(1250 + index * 150)}
-                style={sc.textName}
+        <AnimatedTouchableOpacity
+            entering={FadeInLeft.duration(350).delay(1000 + index * 150)}
+            style={sc.container}
+        >
+            <ShadowedView
+                style={[
+                    { width: 50, height: 50, borderRadius: 30 },
+                    shadowStyle({
+                        color: Colors.mainTheme.darkOlive,
+                        opacity: 0.6,
+                        offset: [2, 2],
+                        radius: 5,
+                    }),
+                ]}
             >
-                {name}
-            </Animated.Text>
-        </TouchableOpacity>
+                <Animated.Image
+                    src={avatar}
+                    style={{
+                        width: 50,
+                        height: 50,
+                        borderRadius: 30,
+                    }}
+                />
+                <Animated.Text
+                    entering={FadeIn.duration(1000).delay(1250 + index * 150)}
+                    style={sc.textName}
+                >
+                    {name}
+                </Animated.Text>
+            </ShadowedView>
+        </AnimatedTouchableOpacity>
     );
 };
 
-const sc = StyleSheet.create({
-    container: {
-        width: 50,
-        height: 50,
-        borderRadius: 30,
-        alignItems: "center",
-        marginTop: 10,
-    },
-    textName: {
-        marginTop: 7,
-        marginLeft: 5,
-        fontSize: 10,
-        textAlign: "center",
-        alignSelf: "flex-start",
-        fontWeight: "bold",
-    },
-});
-
 const SubHeader = () => {
+    const favContactsQuery = useFavouriteContacts();
+
+    const renderFavContacts = useCallback(() => {
+        if (favContactsQuery.isLoading || favContactsQuery.isError) {
+            <SkeletonPlaceholder speed={1000}>
+                <View style={s.row}>
+                    {Array.from({ length: 5 }).map((_, index) => (
+                        <View key={index} style={sc.container} />
+                    ))}
+                </View>
+            </SkeletonPlaceholder>;
+        } else if (favContactsQuery.data) {
+            return (
+                <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={s.row}
+                >
+                    {favContactsQuery.data.map(
+                        (contact: (typeof favContactsQuery.data)[0], index: number) => (
+                            <ContactAvatar
+                                index={index}
+                                key={contact.user.id}
+                                name={contact.user.username}
+                                avatar={contact.user.avatar_url}
+                            />
+                        )
+                    )}
+                </ScrollView>
+            );
+        }
+    }, [favContactsQuery.data]);
+
     return (
         <View style={s.container}>
             <Animated.Text
@@ -68,14 +100,7 @@ const SubHeader = () => {
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={s.row}
             >
-                {fakeData.map((contact, index) => (
-                    <ContactAvatar
-                        key={contact.id}
-                        index={index}
-                        name={contact.name}
-                        avatar={contact.avatar}
-                    />
-                ))}
+                {renderFavContacts()}
             </ScrollView>
         </View>
     );
@@ -97,11 +122,30 @@ const s = StyleSheet.create({
         color: Colors.mainTheme.darkOlive,
     },
     row: {
-        width: "100%",
+        flexGrow: 1,
         paddingHorizontal: 20,
         flexDirection: "row",
         justifyContent: "flex-start",
         columnGap: 20,
         paddingTop: 5,
+    },
+});
+
+const sc = StyleSheet.create({
+    container: {
+        width: 50,
+        height: 50,
+        borderRadius: 30,
+        alignItems: "center",
+        marginTop: 10,
+    },
+    textName: {
+        marginTop: 7,
+        marginLeft: 5,
+        fontSize: 9.5,
+        textAlign: "center",
+        alignSelf: "flex-start",
+        fontWeight: "bold",
+        color: Colors.mainTheme.gray,
     },
 });

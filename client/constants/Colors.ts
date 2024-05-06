@@ -28,5 +28,6 @@ export default {
         tan: "#dac4b3",
         warmBeige: "#d8a788",
         offWhite: "#FAF9F6",
+        gray: "#808080",
     },
 };
