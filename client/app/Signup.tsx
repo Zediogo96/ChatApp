@@ -13,7 +13,6 @@ import React, { memo } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 import Colors from "@/constants/Colors";
-import { DarkTheme, ThemeProvider } from "@react-navigation/native";
 import showFeedbackToast from "@/utils/toast";
 import { useMutation } from "@tanstack/react-query";
 import ErrorText from "@/components/ErrorText";
@@ -39,15 +38,11 @@ const Signup: React.FC = () => {
         mutationFn: async (): Promise<any> => {
             const { username, email, password } = getValues();
 
-            console.log(api.getUri());
-
             const response = api.post("/signup", {
                 username,
                 email,
                 password,
             });
-
-            console.log(response);
         },
 
         onError: (error: Error) => {
@@ -105,9 +100,7 @@ const Signup: React.FC = () => {
                             autoComplete="username"
                         />
                         {errors.username && (
-                            <Text style={s.errorText}>
-                                {errors.username.message}
-                            </Text>
+                            <Text style={s.errorText}>{errors.username.message}</Text>
                         )}
                     </View>
                 )}
@@ -137,9 +130,7 @@ const Signup: React.FC = () => {
                             autoCapitalize="none"
                         />
                         {errors.email && (
-                            <Text style={s.errorText}>
-                                {errors.email.message}
-                            </Text>
+                            <Text style={s.errorText}>{errors.email.message}</Text>
                         )}
                     </View>
                 )}
@@ -195,13 +186,11 @@ const Signup: React.FC = () => {
                     },
                     minLength: {
                         value: __DEV__ ? 1 : 8, // For development purposes, set to 1
-                        message:
-                            "Password confirmation must be at least 8 characters",
+                        message: "Password confirmation must be at least 8 characters",
                     },
                     maxLength: {
                         value: 20,
-                        message:
-                            "Password confirmation must not exceed 20 characters",
+                        message: "Password confirmation must not exceed 20 characters",
                     },
                     pattern: {
                         value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,20}$/,
@@ -222,9 +211,7 @@ const Signup: React.FC = () => {
                         />
                         {errors.passwordConfirmation && (
                             <ErrorText
-                                errorMessage={
-                                    errors.passwordConfirmation.message
-                                }
+                                errorMessage={errors.passwordConfirmation.message}
                             />
                         )}
                     </View>

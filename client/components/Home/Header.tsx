@@ -1,20 +1,21 @@
-import { Dimensions, StyleSheet, TextInput, View } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
 import React, { useState } from "react";
 
-import Ionicons from "@expo/vector-icons/Ionicons";
 import Colors from "@/constants/Colors";
 
 import { ShadowedView, shadowStyle } from "react-native-fast-shadow";
 import Animated, { FadeIn } from "react-native-reanimated";
+import SearchBar from "../General/SearchBar";
 import { router } from "expo-router";
 
 const { height } = Dimensions.get("window");
 
-const Header = () => {
-    const [isFocused, setIsFocused] = useState(false);
+const AnimatedShadowedView = Animated.createAnimatedComponent(ShadowedView);
 
+const Header = () => {
     return (
-        <ShadowedView
+        <AnimatedShadowedView
+            sharedTransitionTag="headerTransition"
             style={[
                 shadowStyle({
                     opacity: 0.3,
@@ -24,42 +25,15 @@ const Header = () => {
                 s.container,
             ]}
         >
-            <Animated.Text entering={FadeIn.duration(1000)} style={s.title}>
+            <Animated.Text
+                sharedTransitionTag="titleTransition"
+                entering={FadeIn.duration(1000)}
+                style={s.title}
+            >
                 Messages
             </Animated.Text>
-            <Animated.View sharedTransitionTag="searchInput">
-                <ShadowedView
-                    style={[
-                        s.inputContainer,
-                        isFocused
-                            ? shadowStyle({
-                                  opacity: 1,
-                                  radius: 1,
-                                  offset: [1, 1],
-                                  color: "black",
-                              })
-                            : shadowStyle({
-                                  opacity: 0.5,
-                                  radius: 1,
-                                  offset: [1, 1],
-                                  color: "black",
-                              }),
-                    ]}
-                >
-                    <Ionicons
-                        name="search"
-                        size={24}
-                        color={Colors.mainTheme.oliveGreen}
-                    />
-                    <TextInput
-                        placeholderTextColor={Colors.mainTheme.oliveGreen}
-                        onFocus={() => router.push("/home/SearchPage")}
-                        style={s.input}
-                        placeholder="Search for messages"
-                    />
-                </ShadowedView>
-            </Animated.View>
-        </ShadowedView>
+            <SearchBar onFocus={() => router.push("/home/SearchPage")} />
+        </AnimatedShadowedView>
     );
 };
 
@@ -72,29 +46,15 @@ const s = StyleSheet.create({
         height: height / 4.5,
         padding: 20,
         justifyContent: "flex-end",
-        rowGap: 20,
 
         borderBottomLeftRadius: 35,
         borderBottomRightRadius: 35,
     },
     title: {
+        paddingBottom: 20,
         fontSize: 30,
         fontWeight: "bold",
         fontFamily: "SpaceMono",
-        color: Colors.mainTheme.darkOlive,
-    },
-    inputContainer: {
-        flexDirection: "row",
-
-        backgroundColor: Colors.mainTheme.offWhite,
-        padding: 10,
-        borderRadius: 15,
-        alignItems: "center",
-        columnGap: 10,
-        height: 50,
-    },
-    input: {
-        flex: 1,
         color: Colors.mainTheme.darkOlive,
     },
 });

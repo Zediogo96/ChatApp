@@ -1,59 +1,39 @@
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import React from "react";
-import Animated from "react-native-reanimated";
-import { ShadowedView, shadowStyle } from "react-native-fast-shadow";
+import SearchBar from "@/components/General/SearchBar";
 import Colors from "@/constants/Colors";
-import { Ionicons } from "@expo/vector-icons";
+import Animated, { FadeIn } from "react-native-reanimated";
 
-const SearchPage = () => {
+const SearchPage: React.FC = () => {
     return (
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-            <Animated.View sharedTransitionTag="searchInput">
-                <ShadowedView
-                    style={[
-                        s.inputContainer,
+        <Animated.View
+            sharedTransitionTag="headerTransition"
+            style={[s.container, { flex: 1, paddingTop: 60 }]}
+        >
+            <Animated.Text sharedTransitionTag="titleTransition" style={s.title}>
+                Messages
+            </Animated.Text>
 
-                        shadowStyle({
-                            opacity: 1,
-                            radius: 1,
-                            offset: [1, 1],
-                            color: "black",
-                        }),
-                    ]}
-                >
-                    <Ionicons
-                        name="search"
-                        size={24}
-                        color={Colors.mainTheme.oliveGreen}
-                    />
-                    <TextInput
-                        placeholderTextColor={Colors.mainTheme.oliveGreen}
-                        style={s.input}
-                        placeholder="Search for messages"
-                    />
-                </ShadowedView>
-            </Animated.View>
-        </View>
+            <SearchBar />
+        </Animated.View>
     );
 };
 
 export default SearchPage;
 
 const s = StyleSheet.create({
-    inputContainer: {
-        flexDirection: "row",
-        width: "90%",
-
-        height: 50,
-
-        backgroundColor: Colors.mainTheme.offWhite,
-        padding: 10,
-        borderRadius: 15,
-        alignItems: "center",
-        columnGap: 10,
+    container: {
+        backgroundColor: Colors.mainTheme.tan,
+        width: "100%",
+        height: "100%",
+        padding: 20,
+        justifyContent: "flex-start",
     },
-    input: {
-        flex: 1,
+    title: {
+        paddingBottom: 20,
+        fontSize: 30,
+        fontWeight: "bold",
+        fontFamily: "SpaceMono",
         color: Colors.mainTheme.darkOlive,
     },
 });

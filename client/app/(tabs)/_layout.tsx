@@ -3,7 +3,6 @@ import { Tabs, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function Layout() {
-    console.log("Layout");
     return (
         <Tabs>
             <Tabs.Screen
