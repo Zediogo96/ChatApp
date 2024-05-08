@@ -31,7 +31,8 @@ func InitRouter(userHandler *user.Handler, messagesHandler *messages.Handler, co
 	r.GET("/user/:username", userHandler.GetUserByUsername)
 
 	// Message Routes
-	r.GET("/messages/last", messagesHandler.GetLastMessages)
+	r.GET("/messages/last/:user_id", messagesHandler.GetLastMessages)
+	r.GET("/messages/search/:user_id", messagesHandler.SearchMessagesByQuery)
 
 	// Contact Routes
 	r.GET("/favourite-contacts/:user_id", contactsHandler.GetFavouriteContacts)

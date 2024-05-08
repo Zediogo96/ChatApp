@@ -29,3 +29,16 @@ func (s *service) GetLastMessages(c context.Context, receiver_id int, limit int)
 
 	return messages, nil
 }
+
+func (s *service) SearchMessagesByQuery(c context.Context, receiver_id int, query string) ([]*MessageWithSender, error) {
+	ctx, cancel := context.WithTimeout(c, s.timeout)
+	defer cancel()
+
+	messages, err := s.repository.SearchMessagesByQuery(ctx, receiver_id, query)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return messages, nil
+}
