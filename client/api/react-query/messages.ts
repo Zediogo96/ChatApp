@@ -8,9 +8,8 @@ const useLastMessages = () => {
     return useQuery({
         queryKey: ["lastMessages"],
         queryFn: async () => {
-            const response = await api.get("messages/last", {
+            const response = await api.get(`messages/last/${user?.id}`, {
                 params: {
-                    id: user?.id,
                     limit: 10,
                 },
             });

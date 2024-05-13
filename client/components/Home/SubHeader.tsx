@@ -20,7 +20,7 @@ const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpaci
 const ContactAvatar: React.FC<ContactAvatarProps> = ({ index, name, avatar }) => {
     return (
         <AnimatedTouchableOpacity
-            entering={FadeInLeft.duration(350).delay(1000 + index * 150)}
+            entering={FadeInLeft.duration(250).delay(750 + index * 150)}
             style={sc.container}
         >
             <ShadowedView

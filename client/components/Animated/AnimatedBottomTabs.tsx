@@ -126,6 +126,7 @@ function AnimatedBottomTabs() {
             >
                 {TabsDataArray.map((item, index) => (
                     <Tabs.Screen
+                        key={index}
                         name={item.route}
                         options={{
                             tabBarButton: (props) => {
