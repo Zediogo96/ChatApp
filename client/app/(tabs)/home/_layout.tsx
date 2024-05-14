@@ -6,6 +6,7 @@ export default function StackLayout() {
         <Stack screenOptions={{ headerShown: false, statusBarAnimation: "fade" }}>
             <Stack.Screen name="index" />
             <Stack.Screen name="SearchPage" />
+            <Stack.Screen name="PrivateConversationPage" />
         </Stack>
     );
 }

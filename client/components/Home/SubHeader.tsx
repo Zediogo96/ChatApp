@@ -6,6 +6,7 @@ import { fakeData } from "@/constants/FakeData";
 import useFavouriteContacts from "@/api/react-query/contacts";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import { ShadowedView, shadowStyle } from "react-native-fast-shadow";
+import { router } from "expo-router";
 
 const { width, height } = Dimensions.get("window");
 
@@ -21,6 +22,15 @@ const ContactAvatar: React.FC<ContactAvatarProps> = ({ index, name, avatar }) =>
     return (
         <AnimatedTouchableOpacity
             entering={FadeInLeft.duration(250).delay(750 + index * 150)}
+            onPress={() => {
+                router.push({
+                    pathname: "home/PrivateConversationPage",
+                    params: {
+                        name: name,
+                        avatar: avatar,
+                    },
+                } as never);
+            }}
             style={sc.container}
         >
             <ShadowedView
