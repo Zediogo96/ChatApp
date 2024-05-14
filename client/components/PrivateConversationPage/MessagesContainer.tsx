@@ -1,14 +1,16 @@
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import React from "react";
 import { ShadowedView, shadowStyle } from "react-native-fast-shadow";
+import { useMessagesBySenderID } from "@/api/react-query/messages";
 
 type MessagesContainerProps = {
     id: string;
 };
 
 const MessagesContainer: React.FC<MessagesContainerProps> = ({ id }) => {
+    const { data: messages, isLoading } = useMessagesBySenderID(id);
 
-    
+    console.log(messages);
 
     return (
         <View style={styles.container}>

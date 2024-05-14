@@ -19,4 +19,23 @@ const useLastMessages = () => {
     });
 };
 
+const useMessagesBySenderID = (senderID: string) => {
+    const user = useAuthStore((state) => state.user);
+
+    return useQuery({
+        queryKey: ["messagesBySenderID", senderID],
+        queryFn: async () => {
+            const response = await api.get(`messages/${user?.id}`, {
+                params: {
+                    senderID,
+                },
+            });
+
+            return response.data;
+        },
+    });
+};
+
 export default useLastMessages;
+
+export { useMessagesBySenderID };
