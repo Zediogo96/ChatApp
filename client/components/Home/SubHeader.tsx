@@ -12,13 +12,14 @@ const { width, height } = Dimensions.get("window");
 
 type ContactAvatarProps = {
     index: number;
+    id: string;
     name: string;
     avatar: string;
 };
 
 const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
 
-const ContactAvatar: React.FC<ContactAvatarProps> = ({ index, name, avatar }) => {
+const ContactAvatar: React.FC<ContactAvatarProps> = ({ index, id, name, avatar }) => {
     return (
         <AnimatedTouchableOpacity
             entering={FadeInLeft.duration(250).delay(750 + index * 150)}
@@ -26,6 +27,7 @@ const ContactAvatar: React.FC<ContactAvatarProps> = ({ index, name, avatar }) =>
                 router.push({
                     pathname: "home/PrivateConversationPage",
                     params: {
+                        id: id,
                         name: name,
                         avatar: avatar,
                     },
@@ -87,6 +89,7 @@ const SubHeader = () => {
                             <ContactAvatar
                                 index={index}
                                 key={contact.user.id}
+                                id={contact.user.id}
                                 name={contact.user.username}
                                 avatar={contact.user.avatar_url}
                             />
