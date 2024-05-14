@@ -28,11 +28,13 @@ type MessageWithSender struct {
 
 type Repository interface {
 	GetLastMessages(ctx context.Context, receiver_id int, limit int) ([]*MessageWithSender, error)
+	GetMessagesBySender(ctx context.Context, receiver_id int, sender_id int) ([]*MessageWithSender, error)
 	SearchMessagesByQuery(ctx context.Context, receiver_id int, query string) ([]*MessageWithSender, error)
 }
 
 type Service interface {
 	GetLastMessages(c context.Context, receiver_id int, limit int) ([]*MessageWithSender, error)
+	GetMessagesBySender(c context.Context, receiver_id int, sender_id int) ([]*MessageWithSender, error)
 	SearchMessagesByQuery(c context.Context, receiver_id int, query string) ([]*MessageWithSender, error)
 }
 

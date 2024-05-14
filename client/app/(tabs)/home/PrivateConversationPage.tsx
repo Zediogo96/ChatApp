@@ -14,12 +14,10 @@ type RouterParams = {
 const PrivateConversationPage: React.FC = () => {
     const { id, name, avatar } = useLocalSearchParams<RouterParams>();
 
-    console.log("PrivateConversationPage", id, name, avatar);
-
     return (
         <View style={[styles.container]}>
             <Header name={name} avatar={avatar} />
-            <MessagesContainer />
+            <MessagesContainer id={id} />
         </View>
     );
 };

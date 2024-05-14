@@ -27,7 +27,7 @@ const ContactAvatar: React.FC<ContactAvatarProps> = ({ index, id, name, avatar }
                 router.push({
                     pathname: "home/PrivateConversationPage",
                     params: {
-                        id: id,
+                        id: String(id),
                         name: name,
                         avatar: avatar,
                     },

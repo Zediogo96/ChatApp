@@ -32,6 +32,7 @@ func InitRouter(userHandler *user.Handler, messagesHandler *messages.Handler, co
 
 	// Message Routes
 	r.GET("/messages/last/:user_id", messagesHandler.GetLastMessages)
+	r.GET("/messages/:user_id", messagesHandler.GetMessagesBySender)
 	r.GET("/messages/search/:user_id", messagesHandler.SearchMessagesByQuery)
 
 	// Contact Routes

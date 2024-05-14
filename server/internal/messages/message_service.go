@@ -42,3 +42,16 @@ func (s *service) SearchMessagesByQuery(c context.Context, receiver_id int, quer
 
 	return messages, nil
 }
+
+func (s *service) GetMessagesBySender(c context.Context, receiver_id int, sender_id int) ([]*MessageWithSender, error) {
+	ctx, cancel := context.WithTimeout(c, s.timeout)
+	defer cancel()
+
+	messages, err := s.repository.GetMessagesBySender(ctx, receiver_id, sender_id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return messages, nil
+}

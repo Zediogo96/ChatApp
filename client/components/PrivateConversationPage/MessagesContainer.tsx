@@ -2,7 +2,14 @@ import { StyleSheet, Text, TextInput, View } from "react-native";
 import React from "react";
 import { ShadowedView, shadowStyle } from "react-native-fast-shadow";
 
-const MessagesContainer = () => {
+type MessagesContainerProps = {
+    id: string;
+};
+
+const MessagesContainer: React.FC<MessagesContainerProps> = ({ id }) => {
+
+    
+
     return (
         <View style={styles.container}>
             <View style={styles.messagesListContainer} />

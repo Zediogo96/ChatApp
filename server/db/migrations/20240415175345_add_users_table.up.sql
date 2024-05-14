@@ -76,8 +76,13 @@ INSERT INTO "message" (sender_id, receiver_id, content_type, content) VALUES
     (5, 1, 'text', 'I AM SO LOST RIGHT NOW!');
 
 INSERT INTO "message" (sender_id, receiver_id, content_type, content) VALUES 
-    (1, 6, 'text', 'Boas Zé, tudo bem?');
+    (5, 1, 'text', 'I dont feel so well mate.');
 
+INSERT INTO "message" (sender_id, receiver_id, content_type, content) VALUES 
+    (1, 5, 'text', 'Hi Nanami, what you mean?');
+
+INSERT INTO "message" (sender_id, receiver_id, content_type, content) VALUES 
+    (1, 6, 'text', 'Hey Mahito, how are you doing?');
 
 -- Add some Favourite Contacts
 
