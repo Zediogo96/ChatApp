@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import api from "..";
 import useAuthStore from "@/store/authStore";
+import useDebounce from "@/utils/hooks/useDebounce";
 
 const useLastMessages = () => {
     const user = useAuthStore((state) => state.user);
@@ -36,6 +37,26 @@ const useMessagesBySenderID = (senderID: string) => {
     });
 };
 
+const useMessagesBySearchQuery = (searchQuery: string, debounceTime: number = 250) => {
+    const user = useAuthStore((state) => state.user);
+
+    const debouncedSearchQuery = useDebounce(searchQuery, debounceTime);
+
+    return useQuery({
+        queryKey: ["messagesBySearchQuery", debouncedSearchQuery],
+        queryFn: async () => {
+            const response = await api.get(`messages/search/${user?.id}`, {
+                params: {
+                    query: debouncedSearchQuery,
+                },
+            });
+
+            return response.data;
+        },
+        enabled: Boolean(debouncedSearchQuery),
+    });
+};
+
 export default useLastMessages;
 
-export { useMessagesBySenderID };
+export { useMessagesBySenderID, useMessagesBySearchQuery };

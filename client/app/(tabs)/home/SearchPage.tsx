@@ -6,26 +6,17 @@ import Animated, { FadeIn } from "react-native-reanimated";
 import api from "@/api";
 import { useQuery } from "@tanstack/react-query";
 import useAuthStore from "@/store/authStore";
+import { useMessagesBySearchQuery } from "@/api/react-query/messages";
 
 const SearchPage: React.FC = () => {
     const user = useAuthStore((state) => state.user);
 
     const [searchStringValue, setSearchStringValue] = React.useState("");
 
-    const { data: queryMessages, isLoading } = useQuery({
-        queryKey: ["messages", searchStringValue],
-        queryFn: async () => {
-            const messages = await api.get(`messages/search/${user?.id}`, {
-                params: {
-                    query: searchStringValue,
-                },
-            });
-            return messages;
-        },
-        enabled: Boolean(searchStringValue),
-    });
+    const { data: queryMessages, isLoading } =
+        useMessagesBySearchQuery(searchStringValue);
 
-    console.log(queryMessages?.data);
+    console.log(queryMessages, isLoading);
 
     return (
         <Animated.View

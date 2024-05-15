@@ -1,5 +1,5 @@
-import { Dimensions, StyleSheet, Text, TextInput, View, ViewStyle } from "react-native";
-import React, { useEffect } from "react";
+import { Dimensions, StyleSheet, TextInput } from "react-native";
+import React, { useEffect, useRef } from "react";
 import Animated from "react-native-reanimated";
 import { ShadowedView, shadowStyle } from "react-native-fast-shadow";
 import { Ionicons } from "@expo/vector-icons";
@@ -15,14 +15,17 @@ const { width } = Dimensions.get("window");
 
 const SearchBar: React.FC<SearchBarProps> = (props) => {
     const { value, onChangeText, onFocus } = props;
-    const inputRef = React.useRef<TextInput>(null);
+    const inputRef = useRef<TextInput>(null);
 
     useEffect(() => {
-        inputRef?.current?.focus();
+        const focusTimeout = setTimeout(() => {
+            inputRef?.current?.focus();
+        }, 100); // Adjust delay as needed
+        return () => clearTimeout(focusTimeout);
     }, []);
 
     return (
-        <Animated.View sharedTransitionTag="searchInput">
+        <Animated.View>
             <ShadowedView
                 style={[
                     s.inputContainer,
@@ -37,6 +40,7 @@ const SearchBar: React.FC<SearchBarProps> = (props) => {
             >
                 <Ionicons name="search" size={24} color={Colors.mainTheme.oliveGreen} />
                 <TextInput
+                    ref={inputRef}
                     placeholderTextColor={Colors.mainTheme.oliveGreen}
                     onFocus={onFocus}
                     style={s.input}
