@@ -1,7 +1,6 @@
 package messages
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -53,8 +52,6 @@ func (h *Handler) GetMessagesBySender(c *gin.Context) {
 	}
 
 	senderID, err := strconv.Atoi(c.Query("senderID"))
-
-	fmt.Println(senderID)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Sender ID missing from the request body"})

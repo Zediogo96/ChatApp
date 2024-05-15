@@ -3,8 +3,30 @@ import React from "react";
 import SearchBar from "@/components/General/SearchBar";
 import Colors from "@/constants/Colors";
 import Animated, { FadeIn } from "react-native-reanimated";
+import api from "@/api";
+import { useQuery } from "@tanstack/react-query";
+import useAuthStore from "@/store/authStore";
 
 const SearchPage: React.FC = () => {
+    const user = useAuthStore((state) => state.user);
+
+    const [searchStringValue, setSearchStringValue] = React.useState("");
+
+    const { data: queryMessages, isLoading } = useQuery({
+        queryKey: ["messages", searchStringValue],
+        queryFn: async () => {
+            const messages = await api.get(`messages/search/${user?.id}`, {
+                params: {
+                    query: searchStringValue,
+                },
+            });
+            return messages;
+        },
+        enabled: Boolean(searchStringValue),
+    });
+
+    console.log(queryMessages?.data);
+
     return (
         <Animated.View
             sharedTransitionTag="headerTransition"
@@ -14,7 +36,7 @@ const SearchPage: React.FC = () => {
                 Messages
             </Animated.Text>
 
-            <SearchBar />
+            <SearchBar value={searchStringValue} onChangeText={setSearchStringValue} />
         </Animated.View>
     );
 };

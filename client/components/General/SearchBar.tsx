@@ -1,18 +1,25 @@
 import { Dimensions, StyleSheet, Text, TextInput, View, ViewStyle } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import Animated from "react-native-reanimated";
 import { ShadowedView, shadowStyle } from "react-native-fast-shadow";
 import { Ionicons } from "@expo/vector-icons";
 import Colors from "@/constants/Colors";
 
 type SearchBarProps = {
+    value: string;
+    onChangeText: (text: string) => void;
     onFocus?: () => void;
 };
 
 const { width } = Dimensions.get("window");
 
 const SearchBar: React.FC<SearchBarProps> = (props) => {
-    const { onFocus } = props;
+    const { value, onChangeText, onFocus } = props;
+    const inputRef = React.useRef<TextInput>(null);
+
+    useEffect(() => {
+        inputRef?.current?.focus();
+    }, []);
 
     return (
         <Animated.View sharedTransitionTag="searchInput">
@@ -34,6 +41,8 @@ const SearchBar: React.FC<SearchBarProps> = (props) => {
                     onFocus={onFocus}
                     style={s.input}
                     placeholder="Search for messages"
+                    value={value}
+                    onChangeText={onChangeText}
                 />
             </ShadowedView>
         </Animated.View>
