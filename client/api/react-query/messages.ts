@@ -37,7 +37,7 @@ const useMessagesBySenderID = (senderID: string) => {
     });
 };
 
-const useMessagesBySearchQuery = (searchQuery: string, debounceTime: number = 250) => {
+const useMessagesBySearchQuery = (searchQuery: string, debounceTime: number = 200) => {
     const user = useAuthStore((state) => state.user);
 
     const debouncedSearchQuery = useDebounce(searchQuery, debounceTime);
@@ -45,6 +45,8 @@ const useMessagesBySearchQuery = (searchQuery: string, debounceTime: number = 25
     return useQuery({
         queryKey: ["messagesBySearchQuery", debouncedSearchQuery],
         queryFn: async () => {
+            if (debouncedSearchQuery.length < 2) return [];
+
             const response = await api.get(`messages/search/${user?.id}`, {
                 params: {
                     query: debouncedSearchQuery,

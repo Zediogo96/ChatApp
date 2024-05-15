@@ -1,4 +1,4 @@
-import { Dimensions, StyleSheet, TextInput } from "react-native";
+import { ActivityIndicator, Dimensions, StyleSheet, TextInput } from "react-native";
 import React, { useEffect, useRef } from "react";
 import Animated from "react-native-reanimated";
 import { ShadowedView, shadowStyle } from "react-native-fast-shadow";
@@ -8,13 +8,15 @@ import Colors from "@/constants/Colors";
 type SearchBarProps = {
     value: string;
     onChangeText: (text: string) => void;
+
+    isQueryLoading: boolean;
     onFocus?: () => void;
 };
 
 const { width } = Dimensions.get("window");
 
 const SearchBar: React.FC<SearchBarProps> = (props) => {
-    const { value, onChangeText, onFocus } = props;
+    const { value, onChangeText, isQueryLoading, onFocus } = props;
     const inputRef = useRef<TextInput>(null);
 
     useEffect(() => {
@@ -48,6 +50,10 @@ const SearchBar: React.FC<SearchBarProps> = (props) => {
                     value={value}
                     onChangeText={onChangeText}
                 />
+
+                {isQueryLoading && (
+                    <ActivityIndicator size="small" color={Colors.mainTheme.oliveGreen} />
+                )}
             </ShadowedView>
         </Animated.View>
     );

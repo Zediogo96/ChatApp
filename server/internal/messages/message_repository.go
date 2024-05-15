@@ -67,15 +67,13 @@ func (r *repository) GetLastMessages(ctx context.Context, receiver_id int, limit
 func (r *repository) SearchMessagesByQuery(ctx context.Context, receiver_id int, query string) ([]*MessageWithSender, error) {
 	var messages []*MessageWithSender
 
-	query = fmt.Sprintf(`
-		SELECT m.*, u.id AS sender_id, u.username AS sender_name, u.avatar_url AS sender_avatar
-		FROM message m
-		JOIN users u ON m.sender_id = u.id
-		WHERE m.receiver_id = %d AND m.content LIKE '%%%s%%' 
-		OR u.username LIKE '%%%s%%'
-		ORDER BY m.created_at DESC`, receiver_id, query, query)
-
-	rows, err := r.db.QueryContext(ctx, query)
+	rows, err := r.db.QueryContext(ctx, `
+    SELECT m.*, u.id AS sender_id, u.username AS sender_name, u.avatar_url AS sender_avatar
+    FROM message m
+    JOIN users u ON m.sender_id = u.id
+    WHERE m.receiver_id = $1 AND (m.content LIKE '%' || $2 || '%' OR u.username LIKE '%' || $2 || '%')
+    ORDER BY m.created_at DESC
+`, receiver_id, query)
 
 	if err != nil {
 		return nil, err

@@ -27,7 +27,11 @@ const SearchPage: React.FC = () => {
                 Messages
             </Animated.Text>
 
-            <SearchBar value={searchStringValue} onChangeText={setSearchStringValue} />
+            <SearchBar
+                isQueryLoading={isLoading}
+                value={searchStringValue}
+                onChangeText={setSearchStringValue}
+            />
         </Animated.View>
     );
 };
