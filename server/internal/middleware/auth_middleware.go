@@ -3,6 +3,7 @@ package middleware
 import (
 	"net/http"
 	"server/internal/token"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -11,16 +12,17 @@ import (
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
-		authHeader := c.GetHeader("Authorization")
+		authorizationHeader := c.GetHeader("Authorization")
 
-		if authHeader == "" {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization header is missing"})
+		extract_token := strings.TrimSpace(strings.Replace(authorizationHeader, "Bearer", "", 1))
+
+		if extract_token == "" {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
 			c.Abort()
 			return
 		}
 
-		// Validate token using the ValidateToken function from the token package
-		claims, err := token.ValidateToken(authHeader)
+		claims, err := token.ValidateToken(extract_token)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
 			c.Abort()
