@@ -30,6 +30,8 @@ type Message = {
 
     created_at: string;
     updated_at: string;
+
+    sender: User_FrontendDisplay;
 };
 
 type User_FrontendDisplay = {
