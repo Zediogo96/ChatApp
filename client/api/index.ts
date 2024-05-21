@@ -4,6 +4,7 @@ import axios from "axios";
 import { localhost } from "@/constants";
 import useAuthStore from "@/store/authStore";
 import { storage } from "@/utils/localStorage";
+import showFeedbackToast from "@/utils/toast";
 
 const api = axios.create({
     baseURL: `http://${localhost}:8080`,
@@ -31,9 +32,18 @@ api.interceptors.response.use(
         return response;
     },
     (error) => {
-        if (error.response && error.response.status === 403) {
+        if (
+            error.response &&
+            (error.response.status === 403 || error.response.status === 401)
+        ) {
             // Call the logout method from your auth store
             useAuthStore.getState().setUnauthenticated();
+            showFeedbackToast({
+                type: "error",
+                title: "Session Expired",
+                message: "Please log in again to continue.",
+                position: "bottom",
+            });
         }
         return Promise.reject(error);
     }

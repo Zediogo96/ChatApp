@@ -4,27 +4,33 @@ import Animated from "react-native-reanimated";
 import { ShadowedView, shadowStyle } from "react-native-fast-shadow";
 import { Ionicons } from "@expo/vector-icons";
 import Colors from "@/constants/Colors";
+import { usePathname } from "expo-router";
+import { RouteNames } from "@/constants/RouteNames";
 
 type SearchBarProps = {
-    value: string;
-    onChangeText: (text: string) => void;
+    isQueryLoading?: boolean;
+    value?: string;
+    onChangeText?: (text: string) => void;
 
-    isQueryLoading: boolean;
     onFocus?: () => void;
 };
 
 const { width } = Dimensions.get("window");
 
 const SearchBar: React.FC<SearchBarProps> = (props) => {
+    const pathName = usePathname();
+
     const { value, onChangeText, isQueryLoading, onFocus } = props;
     const inputRef = useRef<TextInput>(null);
 
     useEffect(() => {
+        if (pathName !== RouteNames.SearchPage) return;
+
         const focusTimeout = setTimeout(() => {
             inputRef?.current?.focus();
         }, 100); // Adjust delay as needed
         return () => clearTimeout(focusTimeout);
-    }, []);
+    }, [pathName]);
 
     return (
         <Animated.View>
