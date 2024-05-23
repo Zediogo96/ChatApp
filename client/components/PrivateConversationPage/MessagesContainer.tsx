@@ -1,7 +1,8 @@
-import { StyleSheet, Text, TextInput, View } from "react-native";
-import React from "react";
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import React, { useContext } from "react";
 import { ShadowedView, shadowStyle } from "react-native-fast-shadow";
 import { useMessagesBySenderID } from "@/api/react-query/messages";
+import { WebSocketContext } from "@/context/WebSocketContext";
 
 type MessagesContainerProps = {
     id: string;
@@ -10,7 +11,7 @@ type MessagesContainerProps = {
 const MessagesContainer: React.FC<MessagesContainerProps> = ({ id }) => {
     const { data: messages, isLoading } = useMessagesBySenderID(id);
 
-    console.log(messages);
+    const wsContext = useContext(WebSocketContext);
 
     return (
         <View style={styles.container}>
@@ -27,8 +28,9 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({ id }) => {
                 ]}
             >
                 <TextInput style={styles.textInput} placeholder="Type a message..." />
-
-                <Text style={styles.sendText}>Send</Text>
+                <TouchableOpacity onPress={() => wsContext?.sendMessage("Hello!")}>
+                    <Text style={styles.sendText}>Send</Text>
+                </TouchableOpacity>
             </ShadowedView>
         </View>
     );
