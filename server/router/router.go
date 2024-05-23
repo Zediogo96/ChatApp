@@ -20,9 +20,9 @@ func InitRouter(userHandler *user.Handler, messagesHandler *messages.Handler, co
 	r.POST("/login", userHandler.Login)
 
 	// Initialize the websocket route
-	r.GET("/ws/:username", func(c *gin.Context) {
-		username := c.Param("username")
-		ws.ServeWs(c.Writer, c.Request, username)
+	r.GET("/ws/:userID", func(c *gin.Context) {
+		userID := c.Param("userID")
+		ws.ServeWs(c.Writer, c.Request, userID)
 	})
 
 	// Initialize the middleware for protected routes, routes above this line are not protected

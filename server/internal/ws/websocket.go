@@ -1,9 +1,13 @@
 package ws
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
+
+	"server/internal/messages"
 
 	"github.com/gorilla/websocket"
 )
@@ -19,13 +23,15 @@ var upgrader = websocket.Upgrader{
 }
 
 type Client struct {
-	Conn     *websocket.Conn
-	Username string
+	Conn   *websocket.Conn
+	userID string
 }
 
 // define our WebSocket endpoint
-func ServeWs(w http.ResponseWriter, r *http.Request, username string) {
+func ServeWs(w http.ResponseWriter, r *http.Request, userID string) {
 	fmt.Println(r.Host, r.URL.Query())
+
+	
 
 	// upgrade this connection to a WebSocket
 	ws, err := upgrader.Upgrade(w, r, nil)
@@ -33,7 +39,7 @@ func ServeWs(w http.ResponseWriter, r *http.Request, username string) {
 		log.Println(err)
 	}
 
-	client := &Client{Conn: ws, Username: username}
+	client := &Client{Conn: ws, userID: userID}
 	// register client
 	clients[client] = true
 
@@ -55,12 +61,32 @@ func receiver(client *Client) {
 
 		fmt.Println("Message Received: ", string(p))
 
-		for client := range clients {
+		// parse message from json string to Message struct
+		var message messages.Message
+		err = json.Unmarshal(p, &message)
 
-			if err := client.Conn.WriteMessage(1, p); err != nil {
-				log.Println(err)
-				client.Conn.Close()
-				delete(clients, client)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
+		fmt.Println("Message Parsed: ", message)
+
+		var receiverID string = strconv.FormatInt(message.ReceiverID, 10)
+
+		fmt.Println("Receiver ID: ", receiverID)
+
+		// find the client that has the same id as the receiver id
+		for client := range clients {
+			fmt.Println("Client ID: ", client.userID)
+			if client.userID == receiverID {
+				fmt.Println("Sending message to receiver: ", message)
+				// send the message to the receiver
+				if err := client.Conn.WriteMessage(1, p); err != nil {
+					log.Println(err)
+					client.Conn.Close()
+					delete(clients, client)
+				}
 			}
 		}
 

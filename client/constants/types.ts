@@ -9,16 +9,6 @@ type LoginResponse = {
     updated_at: string;
 };
 
-type User = {
-    id: string;
-    username: string;
-    email: string;
-    bio: string;
-    avatar_url: string;
-    created_at: string;
-    updated_at: string;
-};
-
 type Message = {
     id: number;
 
@@ -30,18 +20,21 @@ type Message = {
 
     created_at: string;
     updated_at: string;
-
-    sender: User_FrontendDisplay;
 };
 
-type User_FrontendDisplay = {
+type User = {
     id: string;
     username: string;
+    email: string;
+    bio: string;
     avatar_url: string;
+    created_at: string;
+    updated_at: string;
 };
 
+type User_FrontendDisplay = Omit<User, "email" | "bio" | "created_at" | "updated_at">;
+
 type MessageWithSender = {
-    sender: User_FrontendDisplay;
     id: number;
 
     receiver_id: number;
@@ -51,4 +44,6 @@ type MessageWithSender = {
 
     created_at: string;
     updated_at: string;
+
+    sender: User_FrontendDisplay;
 };
