@@ -9,7 +9,7 @@ import {
     Dimensions,
 } from "react-native";
 
-import Svg, { Image } from "react-native-svg";
+import Svg, { Image, Ellipse, ClipPath } from "react-native-svg";
 
 import useAuthStore from "@/store/authStore";
 import { useMutation } from "@tanstack/react-query";
@@ -27,6 +27,7 @@ import Animated, {
     useAnimatedStyle,
     interpolate,
     withTiming,
+    withDelay,
 } from "react-native-reanimated";
 
 interface FormData {
@@ -36,9 +37,10 @@ interface FormData {
 
 const { width, height } = Dimensions.get("window");
 
-const Login: React.FC = () => {
-    const { width, height } = Dimensions.get("window");
+const AnimatedTouchableOpacity =
+    Animated.createAnimatedComponent(TouchableOpacity);
 
+const Login: React.FC = () => {
     const setAuthenticated = useAuthStore((state) => state.setIsAuthenticated);
 
     const {
@@ -95,6 +97,46 @@ const Login: React.FC = () => {
         };
     }, []);
 
+    const buttonAnimatedStyle = useAnimatedStyle(() => {
+        const interpolation = interpolate(
+            imagePosition.value,
+            [0, 1],
+            [250, 0],
+        );
+        return {
+            transform: [
+                { translateY: withTiming(interpolation, { duration: 1000 }) },
+            ],
+            opacity: withTiming(imagePosition.value, { duration: 1000 }),
+        };
+    }, []);
+
+    // create a kind of builder pattern for the animated styles
+    const buttonAnimatedStyleBuilder = (duration: number, delay: number) => {
+        return useAnimatedStyle(() => {
+            const interpolation = interpolate(
+                imagePosition.value,
+                [0, 1],
+                [250, 0],
+            );
+            return {
+                transform: [
+                    {
+                        translateY: withDelay(
+                            delay,
+                            withTiming(interpolation, {
+                                duration: duration,
+                            }),
+                        ),
+                    },
+                ],
+                opacity: withTiming(imagePosition.value, {
+                    duration: duration,
+                }),
+            };
+        }, []);
+    };
+
     const handleLoginButtonPress = () => {
         imagePosition.value = 0;
     };
@@ -102,24 +144,36 @@ const Login: React.FC = () => {
     return (
         <View style={s.container}>
             <Animated.View
-                style={[
-                    StyleSheet.absoluteFill,
-                    imageAnimatedStyle,
-                    { backgroundColor: "dodgerblue" },
-                ]}
-            />
+                style={[StyleSheet.absoluteFill, imageAnimatedStyle]}
+            >
+                <Svg height={height} width={width}>
+                    <ClipPath id="clip_path_id">
+                        <Ellipse cx={width / 2.5} rx={width} ry={height} />
+                    </ClipPath>
+                    <Image
+                        width={width}
+                        height={height}
+                        preserveAspectRatio="xMidYMid slice"
+                        href={require("../assets/images/bg_login.png")}
+                        clipPath="url(#clip_path_id)"
+                    />
+                </Svg>
+            </Animated.View>
 
             <View style={s.bottomContainer}>
-                <TouchableOpacity
-                    style={s.btn}
-                    onPressIn={handleLoginButtonPress}
+                <AnimatedTouchableOpacity
+                    style={[s.btn, buttonAnimatedStyleBuilder(800, 125)]}
+                    onPress={handleLoginButtonPress}
                 >
                     <Text style={s.btnText}>Sign In</Text>
-                </TouchableOpacity>
+                </AnimatedTouchableOpacity>
 
-                <View style={s.btn}>
+                <AnimatedTouchableOpacity
+                    style={[s.btn, buttonAnimatedStyleBuilder(1000, 0)]}
+                    onPress={handleLoginButtonPress}
+                >
                     <Text style={s.btnText}>Register</Text>
-                </View>
+                </AnimatedTouchableOpacity>
 
                 {/* <View style={s.formContainer}>
                     <TextInput
@@ -157,6 +211,7 @@ export default memo(Login);
 const s = StyleSheet.create({
     container: {
         flex: 1,
+        height: height,
         justifyContent: "flex-end",
     },
     bottomContainer: {
@@ -176,6 +231,7 @@ const s = StyleSheet.create({
         marginVertical: 10,
         borderWidth: 1,
         borderColor: "white",
+        zIndex: 2,
     },
 
     btnText: {
