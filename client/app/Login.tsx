@@ -6,7 +6,10 @@ import {
     TouchableOpacity,
     Text,
     ActivityIndicator,
+    Dimensions,
 } from "react-native";
+
+import Svg, { Image } from "react-native-svg";
 
 import useAuthStore from "@/store/authStore";
 import { useMutation } from "@tanstack/react-query";
@@ -18,13 +21,24 @@ import ErrorText from "@/components/ErrorText";
 import api from "@/api";
 
 import { useStore } from "zustand";
+import { ShadowedView, shadowStyle } from "react-native-fast-shadow";
+import Animated, {
+    useSharedValue,
+    useAnimatedStyle,
+    interpolate,
+    withTiming,
+} from "react-native-reanimated";
 
 interface FormData {
     username: string;
     password: string;
 }
 
+const { width, height } = Dimensions.get("window");
+
 const Login: React.FC = () => {
+    const { width, height } = Dimensions.get("window");
+
     const setAuthenticated = useAuthStore((state) => state.setIsAuthenticated);
 
     const {
@@ -65,76 +79,74 @@ const Login: React.FC = () => {
         },
     });
 
+    const imagePosition = useSharedValue(1);
+
+    const imageAnimatedStyle = useAnimatedStyle(() => {
+        const interpolation = interpolate(
+            imagePosition.value,
+            [0, 1],
+            [-height / 2, 0],
+        );
+
+        return {
+            transform: [
+                { translateY: withTiming(interpolation, { duration: 1000 }) },
+            ],
+        };
+    }, []);
+
+    const handleLoginButtonPress = () => {
+        imagePosition.value = 0;
+    };
+
     return (
         <View style={s.container}>
-            <Controller
-                control={control}
-                name="username"
-                rules={{
-                    required: {
-                        value: true,
-                        message: "Please enter your email",
-                    },
-                }}
-                defaultValue=""
-                render={({ field: { onChange, onBlur, value } }) => (
-                    <View style={s.inputContainer}>
-                        <TextInput
-                            style={s.textInput}
-                            placeholder="Email"
-                            onBlur={onBlur}
-                            onChangeText={onChange}
-                            value={value}
-                        />
-                        {errors.username && (
-                            <ErrorText errorMessage={errors.username.message} />
-                        )}
-                    </View>
-                )}
+            <Animated.View
+                style={[
+                    StyleSheet.absoluteFill,
+                    imageAnimatedStyle,
+                    { backgroundColor: "dodgerblue" },
+                ]}
             />
-            <Controller
-                control={control}
-                rules={{
-                    required: {
-                        value: true,
-                        message: "Please enter your password",
-                    },
-                }}
-                name="password"
-                defaultValue=""
-                render={({ field: { onChange, onBlur, value } }) => (
-                    <View style={s.inputContainer}>
-                        <TextInput
-                            style={s.textInput}
-                            placeholder="Password"
-                            onBlur={onBlur}
-                            onChangeText={onChange}
-                            value={value}
-                            secureTextEntry
-                        />
-                        {errors.password && (
-                            <ErrorText errorMessage={errors.password.message} />
-                        )}
-                    </View>
-                )}
-            />
-            <View style={s.btnsContainer}>
+
+            <View style={s.bottomContainer}>
                 <TouchableOpacity
-                    style={s.signInBtn}
-                    onPress={handleSubmit(() => {
-                        loginMutation.mutate();
-                    })}
+                    style={s.btn}
+                    onPressIn={handleLoginButtonPress}
                 >
-                    {loginMutation.isPending ? (
-                        <ActivityIndicator size="small" color="white" />
-                    ) : (
-                        <Text style={{ color: "white" }}>Sign In</Text>
-                    )}
+                    <Text style={s.btnText}>Sign In</Text>
                 </TouchableOpacity>
 
-                <Link href={"/Signup"} style={{ marginTop: 10, fontSize: 12 }}>
-                    <Text style={{ color: "dodgerblue" }}>Don't have an account?</Text>
-                </Link>
+                <View style={s.btn}>
+                    <Text style={s.btnText}>Register</Text>
+                </View>
+
+                {/* <View style={s.formContainer}>
+                    <TextInput
+                        style={s.textInput}
+                        placeholder="Email"
+                        placeholderTextColor={"#000"}
+                    />
+                    <TextInput style={s.textInput} placeholder="Password" />
+                    <TextInput
+                        style={s.textInput}
+                        placeholder="Confirm Password"
+                    />
+
+                    <ShadowedView
+                        style={[
+                            s.btn,
+                            shadowStyle({
+                                color: "black",
+                                opacity: 0.2,
+                                offset: [0, 2],
+                                radius: 5,
+                            }),
+                        ]}
+                    >
+                        <Text style={s.btnText}>Sign In</Text>
+                    </ShadowedView>
+                </View> */}
             </View>
         </View>
     );
@@ -144,43 +156,50 @@ export default memo(Login);
 
 const s = StyleSheet.create({
     container: {
-        marginTop: 40,
-        padding: 12,
         flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
+        justifyContent: "flex-end",
     },
-    textInput: {
-        height: 40,
+    bottomContainer: {
+        width: width,
+        justifyContent: "center",
+        height: height / 3,
+    },
 
-        borderColor: "gray",
-        borderWidth: 1,
-        marginVertical: 10,
-        borderRadius: 11,
-        padding: 10,
-    },
-    btnsContainer: {
-        alignSelf: "center",
+    btn: {
+        backgroundColor: "coral",
+
+        height: 55,
         justifyContent: "center",
         alignItems: "center",
-        width: "80%",
-        marginTop: 20,
+        borderRadius: 35,
+        marginHorizontal: 20,
+        marginVertical: 10,
+        borderWidth: 1,
+        borderColor: "white",
     },
-    signInBtn: {
-        backgroundColor: "dodgerblue",
-        padding: 10,
-        borderRadius: 7,
-        width: "40%",
-        alignItems: "center",
+
+    btnText: {
+        color: "white",
+        fontSize: 20,
+        fontWeight: "600",
+        letterSpacing: 0.5,
     },
-    inputContainer: {
-        width: "80%",
+
+    formContainer: {
+        width: width,
+        backgroundColor: "white",
+        marginHorizontal: 20,
     },
-    errorText: {
-        color: Colors.common.error_red,
-        fontSize: 12,
-        alignSelf: "flex-start",
-        marginLeft: 10,
-        opacity: 0.6,
+
+    textInput: {
+        backgroundColor: "white",
+
+        height: 50,
+        borderWidth: 1,
+        borderColor: "coral",
+        marginHorizontal: 20,
+        marginVertical: 10,
+        borderRadius: 25,
+        paddingLeft: 10,
     },
 });

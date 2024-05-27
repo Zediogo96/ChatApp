@@ -46,7 +46,8 @@
     "react-native-toast-message": "^2.2.0",
     "react-native-use-websocket": "^0.2.6",
     "react-native-web": "~0.19.6",
-    "zustand": "^4.5.2"
+    "zustand": "^4.5.2",
+    "react-native-svg": "14.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
