@@ -1,4 +1,4 @@
-import { View, Text, Pressable, StyleSheet } from "react-native";
+import { View, Text, Pressable, Image, StyleSheet } from "react-native";
 import React from "react";
 import { LinearGradient } from "expo-linear-gradient";
 
@@ -7,7 +7,14 @@ import { useNavigation } from "expo-router";
 
 import Colors from "@/constants/Colors";
 
-import Animated, { Easing, FadeIn, RollInLeft } from "react-native-reanimated";
+import Animated, {
+    BounceIn,
+    BounceInLeft,
+    Easing,
+    FadeIn,
+    RollInLeft,
+    ZoomIn,
+} from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const Welcome: React.FC = () => {
@@ -19,48 +26,45 @@ const Welcome: React.FC = () => {
             }}
             colors={[Colors.mainTheme.warmBeige, Colors.mainTheme.tan]}
         >
-            <SafeAreaView style={{ flex: 1, paddingTop: 20 }}>
-                <Animated.Image
-                    entering={FadeIn.easing(
-                        Easing.bezierFn(0.25, 0.1, 0.25, 1),
-                    ).duration(250)}
-                    source={require("../assets/images/welcome/hero1.jpg")}
-                    style={[s.img1, s.commonSmallerImg]}
-                />
+            <SafeAreaView style={{ flex: 1 }}>
+                <Animated.View
+                    entering={FadeIn.easing(Easing.out(Easing.ease))
+                        .duration(1000)
+                        .delay(100)}
+                >
+                    <Image
+                        source={require("../assets/images/welcome/hero1.jpg")}
+                        style={[s.img1, s.commonSmallerImg]}
+                    />
 
-                <Animated.Image
-                    entering={FadeIn.easing(Easing.bezierFn(0.25, 0.1, 0.25, 1))
-                        .duration(250)
-                        .delay(250)}
-                    source={require("../assets/images/welcome/hero3.jpg")}
-                    style={[s.img2, s.commonSmallerImg]}
-                />
+                    <Image
+                        source={require("../assets/images/welcome/hero3.jpg")}
+                        style={[s.img2, s.commonSmallerImg]}
+                    />
 
-                <Animated.Image
-                    entering={FadeIn.easing(Easing.bezierFn(0.25, 0.1, 0.25, 1))
-                        .duration(250)
-                        .delay(350)}
-                    source={require("../assets/images/welcome/hero3.jpg")}
-                    style={[s.img3, s.commonSmallerImg]}
-                />
+                    <Image
+                        source={require("../assets/images/welcome/hero3.jpg")}
+                        style={[s.img3, s.commonSmallerImg]}
+                    />
 
-                <Animated.Image
-                    entering={FadeIn.easing(Easing.bezierFn(0.25, 0.1, 0.25, 1))
-                        .duration(250)
-                        .delay(450)}
-                    source={require("../assets/images/welcome/hero2.jpg")}
-                    style={[s.img4]}
-                />
+                    <Image
+                        source={require("../assets/images/welcome/hero2.jpg")}
+                        style={[s.img4]}
+                    />
+                </Animated.View>
 
                 <View
                     style={{
                         paddingHorizontal: 22,
                         position: "absolute",
-                        top: 450,
+                        top: 470,
                         width: "100%",
                     }}
                 >
-                    <Text
+                    <Animated.Text
+                        entering={ZoomIn.easing(Easing.out(Easing.ease))
+                            .duration(500)
+                            .delay(100)}
                         style={{
                             fontSize: 50,
                             fontWeight: "800",
@@ -68,11 +72,11 @@ const Welcome: React.FC = () => {
                         }}
                     >
                         Let's Get
-                    </Text>
+                    </Animated.Text>
                     <Animated.Text
-                        entering={RollInLeft.easing(
-                            Easing.bezierFn(0.25, 0.1, 0.25, 1),
-                        )}
+                        entering={BounceInLeft.easing(Easing.out(Easing.ease))
+                            .duration(500)
+                            .delay(500)}
                         style={{
                             fontSize: 46,
                             fontWeight: "800",
@@ -159,7 +163,7 @@ const s = StyleSheet.create({
     },
 
     img1: {
-        top: 40,
+        top: 20,
         transform: [
             { translateX: 20 },
             { translateY: 50 },
@@ -168,8 +172,8 @@ const s = StyleSheet.create({
     },
 
     img2: {
-        top: 0,
-        left: 100,
+        top: -30,
+        left: 110,
         transform: [
             { translateX: 50 },
             { translateY: 50 },
@@ -178,8 +182,8 @@ const s = StyleSheet.create({
     },
 
     img3: {
-        top: 190,
-        left: -40,
+        top: 170,
+        left: -20,
         transform: [
             { translateX: 50 },
             { translateY: 50 },
@@ -192,8 +196,8 @@ const s = StyleSheet.create({
         width: 200,
         borderRadius: 20,
         position: "absolute",
-        top: 140,
-        left: 120,
+        top: 120,
+        left: 130,
         transform: [
             { translateX: 50 },
             { translateY: 50 },
