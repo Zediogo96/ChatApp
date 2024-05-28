@@ -2,8 +2,7 @@ import { StyleSheet, View, Text, Image } from "react-native";
 import React from "react";
 import SearchBar from "@/components/General/SearchBar";
 import Colors from "@/constants/Colors";
-import Animated, { Easing, FadeIn, FadeInLeft } from "react-native-reanimated";
-import useAuthStore from "@/store/authStore";
+import Animated, { Easing, FadeInLeft } from "react-native-reanimated";
 import { useMessagesBySearchQuery } from "@/api/react-query/messages";
 import { FlashList } from "@shopify/flash-list";
 import { ShadowedView, shadowStyle } from "react-native-fast-shadow";
@@ -46,7 +45,10 @@ const SearchPage: React.FC = () => {
             sharedTransitionTag="headerTransition"
             style={[s.container, { flex: 1, paddingTop: 60 }]}
         >
-            <Animated.Text sharedTransitionTag="titleTransition" style={s.title}>
+            <Animated.Text
+                sharedTransitionTag="titleTransition"
+                style={s.title}
+            >
                 Messages
             </Animated.Text>
 
@@ -72,9 +74,13 @@ const SearchPage: React.FC = () => {
                 style={{ flex: 1, marginTop: 20 }}
                 ListHeaderComponentStyle={{ marginTop: 20 }}
                 data={queryMessages || []}
-                renderItem={({ item, index }: { item: Message; index: number }) => (
-                    <SearchItem item={item} index={index} />
-                )}
+                renderItem={({
+                    item,
+                    index,
+                }: {
+                    item: Message;
+                    index: number;
+                }) => <SearchItem item={item} index={index} />}
                 estimatedItemSize={100}
             />
         </Animated.View>
