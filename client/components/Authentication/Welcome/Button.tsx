@@ -25,9 +25,9 @@ const Button: React.FC<ButtonProps> = (props) => {
                     styles.button,
                     props.buttonContainerStyle,
                     shadowStyle({
-                        color: Colors.mainTheme.oliveGreen,
-                        offset: [2, 2],
-                        radius: 20,
+                        color: "white",
+                        offset: [0, 1],
+                        radius: 2,
                         opacity: 1,
                     }),
                 ]}

@@ -1,142 +1,111 @@
-import React, { memo } from "react";
-import {
-    StyleSheet,
-    View,
-    TextInput,
-    TouchableOpacity,
-    Text,
-    ActivityIndicator,
-} from "react-native";
+import React, { memo, useEffect } from "react";
+import { StyleSheet, Dimensions } from "react-native";
 
-import useAuthStore from "@/store/authStore";
-import { useMutation } from "@tanstack/react-query";
-import showFeedbackToast from "@/utils/toast";
-import { Link, router } from "expo-router";
-import { Controller, useForm } from "react-hook-form";
 import Colors from "@/constants/Colors";
-import ErrorText from "@/components/ErrorText";
-import api from "@/api";
+import { LinearGradient } from "expo-linear-gradient";
+import Animated, {
+    Easing,
+    useAnimatedStyle,
+    useSharedValue,
+    withDelay,
+    withSpring,
+    withTiming,
+} from "react-native-reanimated";
+import { shadowStyle } from "react-native-fast-shadow";
+
+// @ts-expect-error: SVG file
+import LoginSvg from "@/assets/images/welcome/login.svg";
 
 interface FormData {
     username: string;
     password: string;
 }
 
+const { height } = Dimensions.get("window");
+
 const Login: React.FC = () => {
-    const setAuthenticated = useAuthStore((state) => state.setIsAuthenticated);
+    const rna_translateY = useSharedValue(-450);
+    const rna_borderRadius = useSharedValue(0);
 
-    const {
-        handleSubmit,
-        control,
-        formState: { errors, isSubmitting },
-        getValues,
-    } = useForm<FormData>();
+    const opacityValue = useSharedValue(0);
 
-    const loginMutation = useMutation({
-        mutationKey: ["login"],
-        mutationFn: async () => {
-            const { username, password } = getValues();
+    useEffect(() => {
+        rna_translateY.value = withDelay(
+            500,
+            withSpring(-75, {
+                damping: 10,
+                stiffness: 75,
+            }),
+        );
+        rna_borderRadius.value = withDelay(
+            1000,
+            withSpring(50, {
+                damping: 10,
+                stiffness: 100,
+            }),
+        );
 
-            const response = await api.post("/login", {
-                username: username,
-                password: password,
-            });
+        opacityValue.value = withDelay(
+            1000,
+            withTiming(1, {
+                duration: 1000,
+                easing: Easing.ease,
+            }),
+        );
+    }, []);
 
-            return response.data;
-        },
-        onError: async (error) => {
-            showFeedbackToast({
-                title: "Authentication Error",
-                message: error.message,
-                type: "error",
-            });
-        },
-        onSuccess: async (data: LoginResponse) => {
-            setAuthenticated(data);
-            router.replace("home/index" as never);
+    const topContainerAnimStyle = useAnimatedStyle(() => {
+        return {
+            borderBottomLeftRadius: rna_borderRadius.value,
+            borderBottomRightRadius: rna_borderRadius.value,
 
-            showFeedbackToast({
-                title: "Authentication Success",
-                message: "You have successfully logged in.",
-                type: "success",
-            });
-        },
+            transform: [
+                {
+                    translateY: rna_translateY.value,
+                },
+            ],
+        };
     });
 
-    return (
-        <View style={s.container}>
-            <Controller
-                control={control}
-                name="username"
-                rules={{
-                    required: {
-                        value: true,
-                        message: "Please enter your email",
-                    },
-                }}
-                defaultValue=""
-                render={({ field: { onChange, onBlur, value } }) => (
-                    <View style={s.inputContainer}>
-                        <TextInput
-                            style={s.textInput}
-                            placeholder="Email"
-                            onBlur={onBlur}
-                            onChangeText={onChange}
-                            value={value}
-                        />
-                        {errors.username && (
-                            <ErrorText errorMessage={errors.username.message} />
-                        )}
-                    </View>
-                )}
-            />
-            <Controller
-                control={control}
-                rules={{
-                    required: {
-                        value: true,
-                        message: "Please enter your password",
-                    },
-                }}
-                name="password"
-                defaultValue=""
-                render={({ field: { onChange, onBlur, value } }) => (
-                    <View style={s.inputContainer}>
-                        <TextInput
-                            style={s.textInput}
-                            placeholder="Password"
-                            onBlur={onBlur}
-                            onChangeText={onChange}
-                            value={value}
-                            secureTextEntry
-                        />
-                        {errors.password && (
-                            <ErrorText errorMessage={errors.password.message} />
-                        )}
-                    </View>
-                )}
-            />
-            <View style={s.btnsContainer}>
-                <TouchableOpacity
-                    style={s.signInBtn}
-                    onPress={handleSubmit(() => {
-                        loginMutation.mutate();
-                    })}
-                >
-                    {loginMutation.isPending ? (
-                        <ActivityIndicator size="small" color="white" />
-                    ) : (
-                        <Text style={{ color: "white" }}>Sign In</Text>
-                    )}
-                </TouchableOpacity>
+    const SVGanimatedStyle = useAnimatedStyle(() => {
+        return {
+            opacity: opacityValue.value,
+        };
+    }, []);
 
-                <Link href={"/Signup"} style={{ marginTop: 10, fontSize: 12 }}>
-                    <Text style={{ color: "dodgerblue" }}>
-                        Don't have an account?
-                    </Text>
-                </Link>
-            </View>
-        </View>
+    return (
+        <LinearGradient
+            style={[s.container]}
+            colors={[Colors.mainTheme.warmBeige, Colors.mainTheme.tan]}
+        >
+            <Animated.View
+                style={[
+                    s.topContainer,
+                    topContainerAnimStyle,
+                    shadowStyle({
+                        color: Colors.mainTheme.darkOlive,
+                        offset: [0, 2],
+                        radius: 5,
+                        opacity: 0.7,
+                    }),
+                ]}
+            >
+                <Animated.View style={[{ marginTop: "15%" }, SVGanimatedStyle]}>
+                    <LoginSvg width={150} height={150} />
+                    <Animated.Text
+                        style={{
+                            fontSize: 22,
+                            fontWeight: "800",
+                            color: Colors.mainTheme.darkOlive,
+                            marginTop: "10%",
+                            textAlign: "center",
+                        }}
+                    >
+                        Login
+                    </Animated.Text>
+                </Animated.View>
+            </Animated.View>
+        </LinearGradient>
     );
 };
 
@@ -144,12 +113,31 @@ export default memo(Login);
 
 const s = StyleSheet.create({
     container: {
-        marginTop: 40,
-        padding: 12,
         flex: 1,
+    },
+    topContainer: {
+        height: height / 2,
+        width: "100%",
+        backgroundColor: "white",
+
+        borderBottomLeftRadius: 50,
+        borderBottomRightRadius: 50,
+
         justifyContent: "center",
         alignItems: "center",
+
+        // shadows
+        shadowColor: "black",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+
+        elevation: 5,
     },
+
     textInput: {
         height: 40,
 
