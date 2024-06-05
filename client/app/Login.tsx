@@ -1,5 +1,5 @@
 import React, { memo, useEffect } from "react";
-import { StyleSheet, Dimensions } from "react-native";
+import { StyleSheet, Dimensions, View, Text } from "react-native";
 
 import Colors from "@/constants/Colors";
 import { LinearGradient } from "expo-linear-gradient";
@@ -15,6 +15,13 @@ import { shadowStyle } from "react-native-fast-shadow";
 
 // @ts-expect-error: SVG file
 import LoginSvg from "@/assets/images/welcome/login.svg";
+import { Controller, useForm } from "react-hook-form";
+import useAuthStore from "@/store/authStore";
+import { useMutation } from "@tanstack/react-query";
+import showFeedbackToast from "@/utils/toast";
+import { router } from "expo-router";
+import api from "@/api";
+import AnimatedFormField from "@/components/Animated/FormField";
 
 interface FormData {
     username: string;
@@ -23,7 +30,53 @@ interface FormData {
 
 const { height } = Dimensions.get("window");
 
+const inputShadowStyle = shadowStyle({
+    color: Colors.mainTheme.darkOlive,
+    offset: [0, 2],
+    radius: 5,
+    opacity: 0.7,
+});
+
 const Login: React.FC = () => {
+    const setAuthenticated = useAuthStore((state) => state.setIsAuthenticated);
+
+    const {
+        handleSubmit,
+        control,
+        formState: { errors, isSubmitting },
+        getValues,
+    } = useForm<FormData>();
+
+    const loginMutation = useMutation({
+        mutationKey: ["login"],
+        mutationFn: async () => {
+            const { username, password } = getValues();
+
+            const response = await api.post("/login", {
+                username: username,
+                password: password,
+            });
+
+            return response.data;
+        },
+        onError: async (error) => {
+            showFeedbackToast({
+                title: "Authentication Error",
+                message: error.message,
+                type: "error",
+            });
+        },
+        onSuccess: async (data: LoginResponse) => {
+            setAuthenticated(data);
+            router.replace("home/index" as never);
+
+            showFeedbackToast({
+                title: "Authentication Success",
+                message: "You have successfully logged in.",
+                type: "success",
+            });
+        },
+    });
     const rna_translateY = useSharedValue(-450);
     const rna_borderRadius = useSharedValue(0);
 
@@ -67,17 +120,14 @@ const Login: React.FC = () => {
         };
     });
 
-    const SVGanimatedStyle = useAnimatedStyle(() => {
+    const opacityAnimatedStyle = useAnimatedStyle(() => {
         return {
             opacity: opacityValue.value,
         };
     }, []);
 
     return (
-        <LinearGradient
-            style={[s.container]}
-            colors={[Colors.mainTheme.warmBeige, Colors.mainTheme.tan]}
-        >
+        <LinearGradient style={s.container} colors={[Colors.mainTheme.tan, Colors.mainTheme.warmBeige]}>
             <Animated.View
                 style={[
                     s.topContainer,
@@ -90,14 +140,14 @@ const Login: React.FC = () => {
                     }),
                 ]}
             >
-                <Animated.View style={[{ marginTop: "15%" }, SVGanimatedStyle]}>
+                <Animated.View style={[{ marginTop: "20%" }, opacityAnimatedStyle]}>
                     <LoginSvg width={150} height={150} />
                     <Animated.Text
                         style={{
                             fontSize: 22,
                             fontWeight: "800",
                             color: Colors.mainTheme.darkOlive,
-                            marginTop: "10%",
+                            paddingTop: "7%",
                             textAlign: "center",
                         }}
                     >
@@ -105,6 +155,38 @@ const Login: React.FC = () => {
                     </Animated.Text>
                 </Animated.View>
             </Animated.View>
+
+            <View style={s.inputsContainer}>
+                <Animated.Text
+                    style={[
+                        {
+                            fontSize: 40,
+                            fontWeight: "bold",
+                            color: "black",
+                            marginLeft: 30,
+                            alignSelf: "flex-start",
+                        },
+                        opacityAnimatedStyle,
+                    ]}
+                >
+                    Welcome back!
+                </Animated.Text>
+
+                <View style={{ marginTop: 40 }}>
+                    <Controller
+                        control={control}
+                        name="username"
+                        rules={{
+                            required: {
+                                value: true,
+                                message: "Please enter your email",
+                            },
+                        }}
+                        defaultValue=""
+                        render={({ field: { onChange, onBlur, value } }) => <AnimatedFormField />}
+                    />
+                </View>
+            </View>
         </LinearGradient>
     );
 };
@@ -135,18 +217,28 @@ const s = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
 
-        elevation: 5,
+        elevation: 10,
+    },
+
+    inputsContainer: {
+        flex: 1.5,
+        marginTop: -50,
+
+        alignItems: "center",
+    },
+
+    inputContainer: {
+        backgroundColor: "white",
+        width: "80%",
+        marginVertical: 10,
+        borderRadius: 10,
     },
 
     textInput: {
         height: 40,
-
-        borderColor: "gray",
-        borderWidth: 1,
-        marginVertical: 10,
-        borderRadius: 11,
         padding: 10,
     },
+
     btnsContainer: {
         alignSelf: "center",
         justifyContent: "center",
@@ -161,9 +253,7 @@ const s = StyleSheet.create({
         width: "40%",
         alignItems: "center",
     },
-    inputContainer: {
-        width: "80%",
-    },
+
     errorText: {
         color: Colors.common.error_red,
         fontSize: 12,
