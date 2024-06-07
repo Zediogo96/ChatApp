@@ -1,11 +1,4 @@
-import {
-    View,
-    Text,
-    Pressable,
-    Image,
-    StyleSheet,
-    Dimensions,
-} from "react-native";
+import { View, Text, Pressable, Image, StyleSheet, Dimensions } from "react-native";
 import React, { useEffect } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 
@@ -28,15 +21,7 @@ import Animated, {
 import { SafeAreaView } from "react-native-safe-area-context";
 import TypeAnimation from "@/components/Animated/TypewritterEffect";
 
-import {
-    Circle,
-    ClipPath,
-    Defs,
-    Polyline,
-    Rect,
-    Svg,
-    Image as SvgImage,
-} from "react-native-svg";
+import { Circle, ClipPath, Defs, Polyline, Rect, Svg, Image as SvgImage } from "react-native-svg";
 
 // @ts-expect-error: SVG file
 import OnBoardSVG from "@/assets/images/welcome/onBoard.svg";
@@ -70,19 +55,12 @@ const Welcome: React.FC = () => {
             }}
             colors={[Colors.mainTheme.warmBeige, Colors.mainTheme.tan]}
         >
-            <Animated.View
-                style={[
-                    { marginTop: "25%", alignSelf: "center" },
-                    SVGanimatedStyle,
-                ]}
-            >
+            <Animated.View style={[{ marginTop: "25%", alignSelf: "center" }, SVGanimatedStyle]}>
                 <OnBoardSVG width={275} height={275} />
             </Animated.View>
 
             <Animated.Text
-                entering={ZoomIn.easing(Easing.out(Easing.ease))
-                    .duration(500)
-                    .delay(100)}
+                entering={ZoomIn.easing(Easing.out(Easing.ease)).duration(500).delay(100)}
                 style={{
                     fontSize: 50,
                     fontWeight: "800",
@@ -93,9 +71,7 @@ const Welcome: React.FC = () => {
                 Let's Get
             </Animated.Text>
             <Animated.Text
-                entering={BounceInLeft.easing(Easing.out(Easing.ease))
-                    .duration(500)
-                    .delay(500)}
+                entering={BounceInLeft.easing(Easing.out(Easing.ease)).duration(500).delay(500)}
                 style={{
                     fontSize: 46,
                     fontWeight: "800",
@@ -156,9 +132,7 @@ const Welcome: React.FC = () => {
                 >
                     Already have an account ?
                 </Text>
-                <Pressable
-                    onPress={() => navigation.navigate("Login" as never)}
-                >
+                <Pressable onPress={() => navigation.navigate("Login" as never)}>
                     <Text
                         style={{
                             fontSize: 16,
@@ -187,31 +161,19 @@ const s = StyleSheet.create({
 
     img1: {
         top: 20,
-        transform: [
-            { translateX: 20 },
-            { translateY: 50 },
-            { rotate: "-15deg" },
-        ],
+        transform: [{ translateX: 20 }, { translateY: 50 }, { rotate: "-15deg" }],
     },
 
     img2: {
         top: -30,
         left: 110,
-        transform: [
-            { translateX: 50 },
-            { translateY: 50 },
-            { rotate: "-5deg" },
-        ],
+        transform: [{ translateX: 50 }, { translateY: 50 }, { rotate: "-5deg" }],
     },
 
     img3: {
         top: 170,
         left: -20,
-        transform: [
-            { translateX: 50 },
-            { translateY: 50 },
-            { rotate: "15deg" },
-        ],
+        transform: [{ translateX: 50 }, { translateY: 50 }, { rotate: "15deg" }],
     },
 
     img4: {
@@ -221,10 +183,6 @@ const s = StyleSheet.create({
         position: "absolute",
         top: 120,
         left: 130,
-        transform: [
-            { translateX: 50 },
-            { translateY: 50 },
-            { rotate: "-15deg" },
-        ],
+        transform: [{ translateX: 50 }, { translateY: 50 }, { rotate: "-15deg" }],
     },
 });
