@@ -29,5 +29,10 @@ export default {
         warmBeige: "#d8a788",
         offWhite: "#FAF9F6",
         gray: "#808080",
+
+        // * Testing New Colors
+
+        lightGray: "#f9f9f9",
+        lightGray2: "#38e7e5",
     },
 };

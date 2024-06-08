@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { StyleSheet, ImageBackground } from "react-native";
+import { StyleSheet, ImageBackground, ImageSourcePropType } from "react-native";
 import Animated, {
     useSharedValue,
     useAnimatedStyle,
@@ -8,8 +8,6 @@ import Animated, {
     Easing,
     interpolate,
 } from "react-native-reanimated";
-
-import backgroundImage from "@/assets/images/login/teste.png";
 
 const INPUT_RANGE_START = 0;
 const INPUT_RANGE_END = 1;
@@ -20,7 +18,11 @@ const ANIMATION_DURATION = 25000;
 
 const AnimatedImageBackground = Animated.createAnimatedComponent(ImageBackground);
 
-export default function BackgroundAnimation() {
+type Props = {
+    imagePath: ImageSourcePropType;
+};
+
+const AnimatedBackground: React.FC<Props> = ({ imagePath }) => {
     const translateValue = useSharedValue(0);
 
     useEffect(() => {
@@ -50,13 +52,9 @@ export default function BackgroundAnimation() {
     });
 
     return (
-        <AnimatedImageBackground
-            resizeMode="repeat"
-            style={[styles.background, animatedStyle]}
-            source={backgroundImage}
-        />
+        <AnimatedImageBackground resizeMode="repeat" style={[styles.background, animatedStyle]} source={imagePath} />
     );
-}
+};
 
 const styles = StyleSheet.create({
     background: {
@@ -68,3 +66,5 @@ const styles = StyleSheet.create({
         transform: [{ translateX: 0 }, { translateY: 0 }],
     },
 });
+
+export default AnimatedBackground;

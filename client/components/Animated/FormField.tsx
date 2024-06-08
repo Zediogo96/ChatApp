@@ -45,7 +45,6 @@ const AnimatedFormField: FC<Props> = ({
 
     const [isHidden, setIsHidden] = useState(hideableInput);
 
-    const currentIconRightName = useSharedValue<keyof typeof FontAwesome.glyphMap>("eye-slash");
     // Change width with an interpolation
     const inputStyle = useAnimatedStyle(() => {
         return {
@@ -117,7 +116,7 @@ const AnimatedFormField: FC<Props> = ({
         return {
             transform: [
                 {
-                    scale: withSpring(interpolate(Number(isHidden), [0, 1], [1, 1.2])),
+                    scale: withSpring(interpolate(Number(isHidden), [0, 1], [1.1, 1])),
                 },
             ],
             color: withTiming(
@@ -147,9 +146,7 @@ const AnimatedFormField: FC<Props> = ({
     }, []);
 
     return (
-        <Animated.View
-            style={[s.mainContainer, containerStyle, inputStyle]}
-        >
+        <Animated.View style={[s.mainContainer, containerStyle, inputStyle]}>
             <AnimatedFontAwsome
                 name={iconLeftName}
                 size={24}
@@ -194,7 +191,7 @@ const AnimatedFormField: FC<Props> = ({
                     style={{ position: "absolute", right: 20 }}
                 >
                     <AnimatedFontAwsome
-                        name={isHidden ? "eye" : "eye-slash"}
+                        name={isHidden ? "eye-slash" : "eye"}
                         size={24}
                         color="black"
                         style={rightIconAnimatedStyle}
@@ -209,6 +206,8 @@ export default AnimatedFormField;
 
 const s = StyleSheet.create({
     mainContainer: {
+        height: 50,
+        borderRadius: 15,
         flexDirection: "row",
         justifyContent: "center",
         alignItems: "center",
