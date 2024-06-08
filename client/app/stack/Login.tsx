@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import { StyleSheet, Dimensions, TouchableOpacity, Text, KeyboardAvoidingView } from "react-native";
+import { StyleSheet, Dimensions, TouchableOpacity, Text, KeyboardAvoidingView, ActivityIndicator } from "react-native";
 import Colors from "@/constants/Colors";
 import Animated, { BounceInLeft, Easing, FadeInDown, FadeInLeft, FadeInRight } from "react-native-reanimated";
 import BackgroundAnimation from "@/components/Authentication/Login/AnimatedBackground";
@@ -166,6 +166,7 @@ const Login: React.FC = () => {
                         </>
                         <AnimatedTouchableOpacity
                             entering={FadeInDown.easing(Easing.out(Easing.ease)).duration(500).delay(1000)}
+                            onPress={handleSubmit(onSubmit)}
                             style={{ alignSelf: "center", marginBottom: 30 }}
                         >
                             <LinearGradient
@@ -173,7 +174,11 @@ const Login: React.FC = () => {
                                 locations={[0.1, 0.8, 0.95]}
                                 style={s.loginBtn}
                             >
-                                <Text style={{ color: "white", fontSize: 17, fontWeight: "bold" }}>Login</Text>
+                                {loginMutation.isPending ? (
+                                    <ActivityIndicator color="white" size={"small"} />
+                                ) : (
+                                    <Text style={{ color: "white", fontSize: 17, fontWeight: "bold" }}>Login</Text>
+                                )}
                             </LinearGradient>
                         </AnimatedTouchableOpacity>
                     </Animated.View>
