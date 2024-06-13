@@ -37,6 +37,7 @@
     "react-hook-form": "^7.51.3",
     "react-native": "0.73.6",
     "react-native-fast-shadow": "^0.1.0",
+    "react-native-gifted-chat": "^2.4.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-linear-gradient": "^2.8.3",
     "react-native-mmkv": "^2.12.2",
