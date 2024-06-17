@@ -9,6 +9,7 @@ import (
 
 	"server/internal/messages"
 
+	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 )
 
@@ -28,27 +29,27 @@ type Client struct {
 }
 
 // define our WebSocket endpoint
-func ServeWs(w http.ResponseWriter, r *http.Request, userID string) {
-	fmt.Println(r.Host, r.URL.Query())
+func ServeWs(w http.ResponseWriter, r *http.Request, userID string, ctx *gin.Context, messageHandler *messages.Handler) {
 
-	
-
-	// upgrade this connection to a WebSocket
+	// ! upgrade this connection to a WebSocket
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)
 	}
 
 	client := &Client{Conn: ws, userID: userID}
-	// register client
+
+	// *  register client
 	clients[client] = true
 
-	// listen indefinitely for new messages coming through the ws conn
-	receiver(client)
+	fmt.Println("Client Connected: ", client)
+
+	// * listen indefinitely for new messages coming through the ws conn
+	receiver(client, ctx, messageHandler)
 
 }
 
-func receiver(client *Client) {
+func receiver(client *Client, ctx *gin.Context, messageHandler *messages.Handler) {
 	for {
 		// read in a message
 		// readMessage returns messageType, message, err
@@ -78,7 +79,7 @@ func receiver(client *Client) {
 
 		// find the client that has the same id as the receiver id
 		for client := range clients {
-			fmt.Println("Client ID: ", client.userID)
+
 			if client.userID == receiverID {
 				fmt.Println("Sending message to receiver: ", message)
 				// send the message to the receiver
@@ -87,6 +88,10 @@ func receiver(client *Client) {
 					client.Conn.Close()
 					delete(clients, client)
 				}
+
+				// cant use this type conversion
+				messageHandler.SaveMessage(ctx, &message)
+
 			}
 		}
 

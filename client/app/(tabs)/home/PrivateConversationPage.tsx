@@ -1,11 +1,13 @@
 import { StyleSheet, View } from "react-native";
-import React, { useMemo } from "react";
+import React, { useContext, useMemo } from "react";
 import { useLocalSearchParams } from "expo-router";
 import Colors from "@/constants/Colors";
 import Header from "@/components/PrivateConversationPage/Header";
 import { useMessagesBySenderID } from "@/api/react-query/messages";
 
 import { GiftedChat } from "react-native-gifted-chat";
+import { WebSocketContext } from "@/context/WebSocketContext";
+import useAuthStore from "@/store/authStore";
 
 type RouterParams = {
   id: string;
@@ -14,9 +16,24 @@ type RouterParams = {
 };
 
 const PrivateConversationPage: React.FC = () => {
+  const user = useAuthStore((state) => state.user);
+
   const { id, name, avatar } = useLocalSearchParams<RouterParams>();
 
   const { data: messages, isLoading } = useMessagesBySenderID(id);
+
+  const { sendMessage } = useContext(WebSocketContext);
+
+  const onSend = (messages: any) => {
+    sendMessage(
+      JSON.stringify({
+        content_type: "text",
+        content: messages[0].text,
+        sender_id: Number(user?.id),
+        receiver_id: Number(id),
+      })
+    );
+  };
 
   const formattedMessages = useMemo(() => {
     if (!messages) return [];
@@ -33,14 +50,12 @@ const PrivateConversationPage: React.FC = () => {
     }));
   }, [messages]);
 
-  console.log("formattedMessages %j", JSON.stringify(formattedMessages));
-
   return (
     <View style={[styles.container]}>
       <Header name={name} avatar={avatar} />
       <GiftedChat
         messages={formattedMessages}
-        // onSend={(messages) => onSend(messages)}
+        onSend={(messages) => onSend(messages)}
         user={{
           _id: 1,
         }}

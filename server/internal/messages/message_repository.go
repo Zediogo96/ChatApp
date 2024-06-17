@@ -107,7 +107,7 @@ func (r *repository) GetMessagesBySender(ctx context.Context, receiver_id int, s
 		SELECT m.*, u.id AS sender_id, u.username AS sender_name, u.avatar_url AS sender_avatar
 		FROM message m
 		JOIN users u ON m.sender_id = u.id
-		WHERE m.receiver_id = %d AND m.sender_id = %d 
+		WHERE m.receiver_id = %d AND m.sender_id = %d
 		OR m.receiver_id = %d AND m.sender_id = %d
 		ORDER BY m.created_at DESC`, receiver_id, sender_id, sender_id, receiver_id)
 
@@ -136,4 +136,24 @@ func (r *repository) GetMessagesBySender(ctx context.Context, receiver_id int, s
 	}
 
 	return messages, nil
+}
+
+func (r *repository) SaveMessage(ctx context.Context, m *Message) error {
+	fmt.Println("Message @ Repository: ", m)
+
+	query := `
+		INSERT INTO message (sender_id, receiver_id, content, content_type)
+		VALUES ($1, $2, $3, $4);
+	`
+
+	_, err := r.db.ExecContext(ctx, query, m.SenderID, m.ReceiverID, m.Content, m.ContentType)
+
+	fmt.Println("Error @ Repository: ", err)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+
 }

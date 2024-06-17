@@ -4,11 +4,9 @@
   "version": "1.0.0",
   "scripts": {
     "start": "expo start",
-    "start:wsl": "REACT_NATIVE_PACKAGER_HOSTNAME=$(netsh.exe interface ipv4 show addresses 'Ethernet' | awk -F'IP Address:' '{print $2}') expo start",
-    "android": "expo run:android",
-    "double": "concurrently \"expo run:android --device Pixel_6_API_34\" \"expo run:android --device Pixel_6a_API_34\"",
-    "android:wsl": "REACT_NATIVE_PACKAGER_HOSTNAME=$(netsh.exe interface ipv4 show addresses 'Ethernet' | awk -F'IP Address:' '{print $2}') expo run:android --device",
+    "android": "expo run:android --device",
     "ios": "expo run:ios",
+    "dev": "concurrently --kill-others \"expo run:android --device \"Medium_API_34\"\" \"expo run:android --device \"Pixel_7_API_34\"",
     "web": "expo start --web",
     "test": "jest --watchAll"
   },

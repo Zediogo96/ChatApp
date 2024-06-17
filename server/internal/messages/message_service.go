@@ -55,3 +55,17 @@ func (s *service) GetMessagesBySender(c context.Context, receiver_id int, sender
 
 	return messages, nil
 }
+
+
+func (s * service) SaveMessage(c context.Context, m *Message) error {
+	ctx, cancel := context.WithTimeout(c, s.timeout)
+	defer cancel()
+
+	err := s.repository.SaveMessage(ctx, m)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

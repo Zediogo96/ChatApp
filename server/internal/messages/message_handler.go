@@ -92,3 +92,16 @@ func (h *Handler) SearchMessagesByQuery(c *gin.Context) {
 
 	c.JSON(http.StatusOK, res)
 }
+
+func (h *Handler) SaveMessage(c *gin.Context, m *Message) {
+
+	err := h.Service.SaveMessage(c.Request.Context(), m)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Message saved successfully"})
+
+}
