@@ -28,9 +28,13 @@ func (r *repository) GetLastMessages(ctx context.Context, receiverID int, limit 
 
 	query := `
 		SELECT m.*, u.id AS sender_id, u.username AS sender_name, u.avatar_url AS sender_avatar
-		FROM message m
+		FROM (
+			SELECT DISTINCT ON (sender_id) *
+			FROM message
+			WHERE receiver_id = $1
+			ORDER BY sender_id, created_at DESC
+		) m
 		JOIN users u ON m.sender_id = u.id
-		WHERE m.receiver_id = $1
 		ORDER BY m.created_at DESC
 		LIMIT $2`
 
