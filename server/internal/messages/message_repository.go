@@ -27,7 +27,7 @@ func (r *repository) GetLastMessages(ctx context.Context, receiverID int, limit 
 	var messages []*MessageWithSender
 
 	query := `
-		SELECT m.*, u.id AS sender_id, u.username AS sender_name, u.avatar_url AS sender_avatar
+		SELECT m.*, u.id AS sender_id, u.username AS sender_name, u.avatar_url AS sender_avatar, COALESCE(unread_count, 0) AS unread_count
 		FROM (
 			SELECT DISTINCT ON (sender_id) *
 			FROM message
@@ -35,6 +35,12 @@ func (r *repository) GetLastMessages(ctx context.Context, receiverID int, limit 
 			ORDER BY sender_id, created_at DESC
 		) m
 		JOIN users u ON m.sender_id = u.id
+		LEFT JOIN (
+			SELECT sender_id, COUNT(*) AS unread_count
+			FROM message
+			WHERE receiver_id = $1 AND status = 'not_read'
+			GROUP BY sender_id
+		) unread ON m.sender_id = unread.sender_id
 		ORDER BY m.created_at DESC
 		LIMIT $2`
 
@@ -50,8 +56,9 @@ func (r *repository) GetLastMessages(ctx context.Context, receiverID int, limit 
 
 		err := rows.Scan(
 			&m.ID, &m.SenderID, &m.ReceiverID, &m.ContentType, &m.Content, &m.Status, &m.Created_at, &m.Updated_at,
-			&sender.ID, &sender.Username, &sender.AvatarURL,
+			&sender.ID, &sender.Username, &sender.AvatarURL, &m.NotReadCount,
 		)
+
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan row: %w", err)
 		}

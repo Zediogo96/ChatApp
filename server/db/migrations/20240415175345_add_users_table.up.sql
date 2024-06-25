@@ -101,6 +101,9 @@ INSERT INTO "contact" (user_id, contact_id, is_favourite) VALUES
 INSERT INTO "contact" (user_id, contact_id, is_favourite) VALUES
     (1, 6, TRUE);
 
+INSERT INTO "contact" (user_id, contact_id, is_favourite) VALUES
+    (5,1 , TRUE);
+
 
 -- Add some Blocked Contacts
 INSERT INTO "contact" (user_id, contact_id, is_blocked) VALUES

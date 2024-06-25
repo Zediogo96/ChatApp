@@ -34,7 +34,7 @@ const WebSocketProvider = ({ children }: { children: React.ReactNode }) => {
   // when a message is received, invalidate the last messages query
   useEffect(() => {
     if (lastMessage) {
-      console.log("lastMessage", lastMessage.data);
+
       queryClient.invalidateQueries({ queryKey: ["lastMessages"] });
     }
   }, [lastMessage, queryClient]);

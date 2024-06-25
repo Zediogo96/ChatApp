@@ -26,6 +26,8 @@ type MessageWithSender struct {
 	NotReadCount int                     `json:"unread_count"`
 }
 
+// define an enum for message status
+
 type Repository interface {
 	GetLastMessages(ctx context.Context, receiver_id int, limit int) ([]*MessageWithSender, error)
 	GetMessagesBySender(ctx context.Context, receiver_id int, sender_id int) ([]*MessageWithSender, error)
