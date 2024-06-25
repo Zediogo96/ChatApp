@@ -26,34 +26,48 @@ func NewRepository(db DBTX) Repository {
 func (r *repository) GetLastMessages(ctx context.Context, receiverID int, limit int) ([]*MessageWithSender, error) {
 	var messages []*MessageWithSender
 
+	// Main query to fetch the latest messages with sender details and unread count
 	query := `
-		SELECT m.*, u.id AS sender_id, u.username AS sender_name, u.avatar_url AS sender_avatar, COALESCE(unread_count, 0) AS unread_count
-		FROM (
-			SELECT DISTINCT ON (sender_id) *
-			FROM message
-			WHERE receiver_id = $1
-			ORDER BY sender_id, created_at DESC
-		) m
-		JOIN users u ON m.sender_id = u.id
-		LEFT JOIN (
-			SELECT sender_id, COUNT(*) AS unread_count
-			FROM message
-			WHERE receiver_id = $1 AND status = 'not_read'
-			GROUP BY sender_id
-		) unread ON m.sender_id = unread.sender_id
-		ORDER BY m.created_at DESC
-		LIMIT $2`
+        SELECT m.*,
+               u.id AS sender_id,
+               u.username AS sender_name,
+               u.avatar_url AS sender_avatar,
+               COALESCE(unread_count, 0) AS unread_count
+        FROM (
+            -- Subquery to get the latest message from each sender to the receiver
+            SELECT DISTINCT ON (sender_id) *
+            FROM message
+            WHERE receiver_id = $1
+            ORDER BY sender_id, created_at DESC
+        ) m
+        -- Join with the users table to get sender details
+        JOIN users u ON m.sender_id = u.id
+        -- Left join with the unread messages count subquery
+        LEFT JOIN (
+            -- Subquery to count unread messages from each sender to the receiver
+            SELECT sender_id, COUNT(*) AS unread_count
+            FROM message
+            WHERE receiver_id = $1 AND status = 'unread'
+            GROUP BY sender_id
+        ) unread ON m.sender_id = unread.sender_id
+        -- Order the results by the creation time of the messages in descending order
+        ORDER BY m.created_at DESC
+        -- Limit the number of results to the specified limit
+        LIMIT $2`
 
+	// Execute the query with the provided receiverID and limit
 	rows, err := r.db.QueryContext(ctx, query, receiverID, limit)
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute query: %w", err)
 	}
 	defer rows.Close()
 
+	// Iterate through the query results
 	for rows.Next() {
 		var m MessageWithSender
 		var sender user.UserSimpleDisplay
 
+		// Scan the row into the MessageWithSender and UserSimpleDisplay structs
 		err := rows.Scan(
 			&m.ID, &m.SenderID, &m.ReceiverID, &m.ContentType, &m.Content, &m.Status, &m.Created_at, &m.Updated_at,
 			&sender.ID, &sender.Username, &sender.AvatarURL, &m.NotReadCount,
@@ -63,7 +77,9 @@ func (r *repository) GetLastMessages(ctx context.Context, receiverID int, limit 
 			return nil, fmt.Errorf("failed to scan row: %w", err)
 		}
 
+		// Assign the scanned sender details to the MessageWithSender struct
 		m.Sender = &sender
+		// Append the MessageWithSender struct to the messages slice
 		messages = append(messages, &m)
 	}
 
