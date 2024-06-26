@@ -1,153 +1,178 @@
 import { Dimensions, StyleSheet, Text, View, Image } from "react-native";
 import { FlashList } from "@shopify/flash-list";
-import React, { useCallback } from "react";
+import React, { FC } from "react";
 import Colors from "@/constants/Colors";
 import { ShadowedView, shadowStyle } from "react-native-fast-shadow";
 
 import useLastMessages from "@/api/react-query/messages";
-import useAuthStore from "@/store/authStore";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 
 const { width } = Dimensions.get("window");
 
-const MainFrame = () => {
-    const { data: messages, isLoading } = useLastMessages();
+const Item: FC<{ item: MessageWithSender; isLoading: boolean }> = (props) => {
+  const { item, isLoading } = props;
 
-    const state = useAuthStore((state) => state);
-
-    const renderItem = useCallback(
-        ({ item }: { item: MessageWithSender }) => {
-            if (isLoading)
-                return (
-                    <SkeletonPlaceholder highlightColor="#f0f0f0">
-                        <SkeletonPlaceholder.Item flexDirection="row" alignItems="center">
-                            <SkeletonPlaceholder.Item
-                                width={45}
-                                height={45}
-                                borderRadius={20}
-                            />
-                            <SkeletonPlaceholder.Item marginLeft={10}>
-                                <SkeletonPlaceholder.Item
-                                    width={100}
-                                    height={12}
-                                    borderRadius={4}
-                                />
-                                <SkeletonPlaceholder.Item
-                                    width={150}
-                                    height={12}
-                                    borderRadius={4}
-                                />
-                            </SkeletonPlaceholder.Item>
-                        </SkeletonPlaceholder.Item>
-                    </SkeletonPlaceholder>
-                );
-
-            return (
-                <View style={styles.itemContainer}>
-                    <View style={{ flexDirection: "row", alignItems: "center" }}>
-                        <Image
-                            source={{ uri: item.sender.avatar_url }}
-                            style={{
-                                height: 45,
-                                width: 45,
-                                borderRadius: 20,
-                                borderWidth: 1,
-                            }}
-                        />
-
-                        <View style={{ flex: 1 }}>
-                            <Text
-                                style={{
-                                    fontSize: 12,
-                                    color: Colors.mainTheme.oliveGreen,
-                                    fontWeight: "bold",
-                                    marginLeft: 10,
-                                }}
-                            >
-                                {item.sender.username}
-                            </Text>
-                            {/* Last Message  */}
-                            <Text
-                                style={{
-                                    fontSize: 12,
-                                    color: Colors.mainTheme.oliveGreen,
-                                    marginLeft: 10,
-                                }}
-                            >
-                                {item.content}
-                            </Text>
-                        </View>
-                    </View>
-
-                    <View style={{ width: 20, height: 20 }} />
-                </View>
-            );
-        },
-        [isLoading, messages]
-    );
-
+  if (isLoading) {
     return (
-        <ShadowedView
-            style={[
-                styles.container,
-                shadowStyle({
-                    opacity: 0.1,
-                    radius: 20,
-                    offset: [0, -2],
-                }),
-            ]}
-        >
-            <Text style={styles.title}>Most Recent</Text>
-
-            <FlashList
-                showsVerticalScrollIndicator={false}
-                renderItem={renderItem}
-                estimatedItemSize={10}
-                data={messages || []}
-                keyExtractor={(item) => {
-                    return item.id.toString();
-                }}
-                numColumns={1}
+      <SkeletonPlaceholder highlightColor="#f0f0f0">
+        <SkeletonPlaceholder.Item flexDirection="row" alignItems="center">
+          <SkeletonPlaceholder.Item width={45} height={45} borderRadius={20} />
+          <SkeletonPlaceholder.Item marginLeft={10}>
+            <SkeletonPlaceholder.Item
+              width={100}
+              height={12}
+              borderRadius={4}
             />
-        </ShadowedView>
+            <SkeletonPlaceholder.Item
+              width={150}
+              height={12}
+              borderRadius={4}
+            />
+          </SkeletonPlaceholder.Item>
+        </SkeletonPlaceholder.Item>
+      </SkeletonPlaceholder>
     );
+  }
+
+  const formatUnreadCount = (count: number) => {
+    if (count > 9) {
+      return "9+";
+    }
+    return count;
+  };
+
+  return (
+    <View style={styles.itemContainer}>
+      <Image source={{ uri: item.sender.avatar_url }} style={styles.avatar} />
+
+      <View style={styles.lastMessageContentContainer}>
+        <View style={[styles.spaceBetweenRow, styles.lastMessageContentTopRow]}>
+          <Text style={styles.senderName}>{item.sender.username}</Text>
+          <View style={styles.messageCountContainer}>
+            <Text style={styles.messageCount}>
+              {formatUnreadCount(item.unread_count)}
+            </Text>
+          </View>
+        </View>
+        {/* Last Message  */}
+        <Text style={styles.lastMessageContent}>{item.content}</Text>
+      </View>
+    </View>
+  );
+};
+
+const MainFrame = () => {
+  const { data: messages, isLoading } = useLastMessages();
+
+  // const state = useAuthStore((state) => state);
+
+  return (
+    <ShadowedView
+      style={[
+        styles.container,
+        shadowStyle({
+          opacity: 0.1,
+          radius: 20,
+          offset: [0, -2],
+        }),
+      ]}
+    >
+      <Text style={styles.title}>Most Recent</Text>
+
+      <FlashList
+        showsVerticalScrollIndicator={false}
+        renderItem={({ item }: { item: MessageWithSender }) => (
+          <Item item={item} isLoading={isLoading} />
+        )}
+        estimatedItemSize={10}
+        data={messages || []}
+        keyExtractor={(item) => {
+          return item.id.toString();
+        }}
+        numColumns={1}
+      />
+    </ShadowedView>
+  );
 };
 
 export default MainFrame;
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        marginTop: 20,
-        borderTopLeftRadius: 15,
-        borderTopRightRadius: 15,
+  container: {
+    flex: 1,
+    marginTop: 20,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
 
-        backgroundColor: "white",
+    backgroundColor: "white",
 
-        paddingTop: 15,
-    },
+    paddingTop: 15,
+  },
 
-    title: {
-        fontSize: 20,
-        color: Colors.mainTheme.oliveGreen,
-        fontWeight: "bold",
-        alignSelf: "flex-start",
-        marginHorizontal: 15,
-    },
+  title: {
+    fontSize: 20,
+    color: Colors.mainTheme.darkOlive,
+    fontWeight: "bold",
+    alignSelf: "flex-start",
+    marginHorizontal: 15,
+  },
 
-    itemContainer: {
-        height: 75,
-        width: width - 20,
-        borderRadius: 20,
+  itemContainer: {
+    height: 75,
+    width: width - 20,
+    borderRadius: 20,
 
-        alignSelf: "center",
+    alignSelf: "center",
 
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
 
-        paddingHorizontal: 15,
+    paddingHorizontal: 15,
 
-        marginTop: 10,
-    },
+    marginTop: 10,
+  },
+
+  lastMessageContentContainer: { flex: 1, marginLeft: 15 },
+
+  spaceBetweenRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+
+  lastMessageContentTopRow: {},
+
+  messageCountContainer: {
+    backgroundColor: Colors.mainTheme.darkOlive,
+    borderRadius: 10,
+    height: 18,
+    width: 18,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  messageCount: {
+    fontSize: 10,
+    color: "white",
+    fontWeight: "bold",
+  },
+
+  avatar: {
+    height: 45,
+    width: 45,
+    borderRadius: 20,
+    borderWidth: 1,
+  },
+  senderName: {
+    fontSize: 18,
+    color: Colors.mainTheme.oliveGreen,
+    fontWeight: "bold",
+  },
+  lastMessageContent: {
+    fontSize: 12,
+    color: "gray",
+    fontWeight: "400",
+    marginTop: 1.5,
+  },
 });
