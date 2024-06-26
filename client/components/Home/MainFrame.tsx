@@ -35,10 +35,21 @@ const Item: FC<{ item: MessageWithSender; isLoading: boolean }> = (props) => {
   }
 
   const formatUnreadCount = (count: number) => {
-    if (count > 9) {
-      return "9+";
+    return count > 9 ? "9+" : count.toString();
+  };
+
+  const formatDate = (date: string) => {
+    const dateObj = new Date(date);
+    const hours = dateObj.getHours();
+    const minutes = dateObj.getMinutes();
+
+    if (hours === 0) {
+      return `${minutes}m ago`;
+    } else if (hours < 24) {
+      return `${hours}h ago`;
+    } else {
+      return `${hours / 24}d ago`;
     }
-    return count;
   };
 
   return (
@@ -55,7 +66,19 @@ const Item: FC<{ item: MessageWithSender; isLoading: boolean }> = (props) => {
           </View>
         </View>
         {/* Last Message  */}
-        <Text style={styles.lastMessageContent}>{item.content}</Text>
+        <View style={styles.spaceBetweenRow}>
+          <Text
+            numberOfLines={1}
+            ellipsizeMode="middle"
+            style={styles.lastMessageContent}
+          >
+            {item.content}
+          </Text>
+
+          <Text style={styles.lastMessageDate}>
+            {formatDate(item.created_at)}
+          </Text>
+        </View>
       </View>
     </View>
   );
@@ -84,6 +107,7 @@ const MainFrame = () => {
         renderItem={({ item }: { item: MessageWithSender }) => (
           <Item item={item} isLoading={isLoading} />
         )}
+        contentContainerStyle={{ paddingTop: 10 }}
         estimatedItemSize={10}
         data={messages || []}
         keyExtractor={(item) => {
@@ -141,13 +165,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 
-  lastMessageContentTopRow: {},
+  lastMessageContentTopRow: {
+    marginBottom: 3,
+  },
 
   messageCountContainer: {
-    backgroundColor: Colors.mainTheme.darkOlive,
+    backgroundColor: Colors.mainTheme.warmBeige,
     borderRadius: 10,
-    height: 18,
-    width: 18,
+    height: 15,
+    width: 15,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -174,5 +200,13 @@ const styles = StyleSheet.create({
     color: "gray",
     fontWeight: "400",
     marginTop: 1.5,
+    maxWidth: 225,
+  },
+
+  lastMessageDate: {
+    fontSize: 10,
+    color: "gray",
+
+    fontWeight: "400",
   },
 });
