@@ -1,4 +1,11 @@
-import { Dimensions, StyleSheet, Text, View, Image } from "react-native";
+import {
+  Dimensions,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import React, { FC } from "react";
 import Colors from "@/constants/Colors";
@@ -6,6 +13,7 @@ import { ShadowedView, shadowStyle } from "react-native-fast-shadow";
 
 import useLastMessages from "@/api/react-query/messages";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
+import { router } from "expo-router";
 
 const { width } = Dimensions.get("window");
 
@@ -53,7 +61,19 @@ const Item: FC<{ item: MessageWithSender; isLoading: boolean }> = (props) => {
   };
 
   return (
-    <View style={styles.itemContainer}>
+    <TouchableOpacity
+      onPress={() => {
+        router.push({
+          pathname: "home/PrivateConversationPage",
+          params: {
+            id: String(item.sender.id),
+            name: item.sender.username,
+            avatar: item.sender.avatar_url,
+          },
+        } as never);
+      }}
+      style={styles.itemContainer}
+    >
       <Image source={{ uri: item.sender.avatar_url }} style={styles.avatar} />
 
       <View style={styles.lastMessageContentContainer}>
@@ -80,7 +100,7 @@ const Item: FC<{ item: MessageWithSender; isLoading: boolean }> = (props) => {
           </Text>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
