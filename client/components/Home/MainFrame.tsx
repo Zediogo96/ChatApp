@@ -7,13 +7,18 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { FlashList } from "@shopify/flash-list";
-import React, { FC } from "react";
+import React, { FC, useEffect, useRef } from "react";
 import Colors from "@/constants/Colors";
 import { ShadowedView, shadowStyle } from "react-native-fast-shadow";
 
 import useLastMessages from "@/api/react-query/messages";
 import SkeletonPlaceholder from "react-native-skeleton-placeholder";
 import { router } from "expo-router";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+} from "react-native-reanimated";
 
 const { width } = Dimensions.get("window");
 
@@ -60,6 +65,26 @@ const Item: FC<{ item: MessageWithSender; isLoading: boolean }> = (props) => {
     }
   };
 
+  const scale = useSharedValue(1);
+  const isFirstRender = useRef(true);
+
+  const messageContentStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: scale.value }],
+    };
+  });
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    scale.value = withTiming(1.1, { duration: 200 }, () => {
+      scale.value = withTiming(1, { duration: 200 });
+    });
+  }, [item.content]);
+
   return (
     <TouchableOpacity
       onPress={() => {
@@ -87,13 +112,13 @@ const Item: FC<{ item: MessageWithSender; isLoading: boolean }> = (props) => {
         </View>
         {/* Last Message  */}
         <View style={styles.spaceBetweenRow}>
-          <Text
+          <Animated.Text
             numberOfLines={1}
             ellipsizeMode="middle"
-            style={styles.lastMessageContent}
+            style={[styles.lastMessageContent, messageContentStyle]}
           >
             {item.content}
-          </Text>
+          </Animated.Text>
 
           <Text style={styles.lastMessageDate}>
             {formatDate(item.created_at)}
