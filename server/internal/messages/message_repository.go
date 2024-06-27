@@ -160,14 +160,19 @@ func (r *repository) GetMessagesBySender(ctx context.Context, receiverID int, se
 }
 
 func (r *repository) SaveMessage(ctx context.Context, m *Message) error {
+
 	query := `
 		INSERT INTO message (sender_id, receiver_id, content, content_type)
 		VALUES ($1, $2, $3, $4)`
 
 	_, err := r.db.ExecContext(ctx, query, m.SenderID, m.ReceiverID, m.Content, m.ContentType)
+
+	fmt.Println("Message saved: ", m.SenderID, m.ReceiverID, m.Content, m.ContentType, m.Status)
 	if err != nil {
 		return fmt.Errorf("failed to execute query: %w", err)
 	}
+
+	fmt.Println("Message saved successfully")
 
 	return nil
 }

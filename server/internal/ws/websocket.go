@@ -60,7 +60,7 @@ func receiver(client *Client, ctx *gin.Context, messageHandler *messages.Handler
 			return
 		}
 
-		fmt.Println("Message Received: ", string(p))
+		// fmt.Println("Message Received: ", string(p))
 
 		// parse message from json string to Message struct
 		var message messages.Message
@@ -71,11 +71,11 @@ func receiver(client *Client, ctx *gin.Context, messageHandler *messages.Handler
 			return
 		}
 
-		fmt.Println("Message Parsed: ", message)
+		// fmt.Println("Message Parsed: ", message)
 
 		var receiverID string = strconv.FormatInt(message.ReceiverID, 10)
 
-		fmt.Println("Receiver ID: ", receiverID)
+		// fmt.Println("Receiver ID: ", receiverID)
 
 		// find the client that has the same id as the receiver id
 		for client := range clients {
@@ -89,7 +89,6 @@ func receiver(client *Client, ctx *gin.Context, messageHandler *messages.Handler
 					delete(clients, client)
 				}
 
-				// cant use this type conversion
 				messageHandler.SaveMessage(ctx, &message)
 
 			}

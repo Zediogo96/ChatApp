@@ -19,7 +19,7 @@ export const WebSocketContext = createContext<WebSocketContextType>(
 
 const WebSocketProvider = ({ children }: { children: React.ReactNode }) => {
   const user = useAuthStore((state) => state.user);
-
+  // ws://localhost:8080/ws/5
   const url = `ws://${localhost}:8080/ws/${user?.id}/`;
   const [socketUrl] = useState(url);
 
@@ -27,15 +27,14 @@ const WebSocketProvider = ({ children }: { children: React.ReactNode }) => {
     shouldReconnect: () => true, // Auto-reconnect on disconnect
   });
 
-  console.log("Ready state", ReadyState[readyState]);
-
   const queryClient = useQueryClient();
 
   // when a message is received, invalidate the last messages query
   useEffect(() => {
     if (lastMessage) {
-
-      queryClient.invalidateQueries({ queryKey: ["lastMessages"] });
+      console.log(queryClient.getQueryData(["lastMessages"])),
+        queryClient.invalidateQueries({ queryKey: ["lastMessages"] });
+      console.log(queryClient.getQueryData(["lastMessages"]));
     }
   }, [lastMessage, queryClient]);
 

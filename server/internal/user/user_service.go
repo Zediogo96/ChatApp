@@ -2,7 +2,6 @@ package user
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"server/constants"
 	"server/util"
@@ -115,7 +114,7 @@ func (s *service) Login(c context.Context, username, password string) (*LoginRes
 
 	secret := os.Getenv(constants.JWT_SECRET)
 
-	fmt.Println("Secret: ", secret)
+	// fmt.Println("Secret: ", secret)
 
 	tokenString, err := token.SignedString([]byte(secret))
 
@@ -123,7 +122,7 @@ func (s *service) Login(c context.Context, username, password string) (*LoginRes
 		return nil, err
 	}
 
-	fmt.Println("Token: ", tokenString)
+	// fmt.Println("Token: ", tokenString)
 
 	return &LoginResponse{
 		ID:         strconv.FormatInt(u.ID, 10),

@@ -6,7 +6,7 @@
     "start": "expo start",
     "android": "expo run:android --device",
     "ios": "expo run:ios",
-    "dev": "concurrently --kill-others \"expo run:android --device \"Medium_API_34\"\" \"expo run:android --device \"Pixel_7_API_34\"",
+    "dev": "concurrently --kill-others \"expo run:android --device \"Pixel_8_API_34\"\" \"expo run:android --device \"Pixel_7_API_34\"",
     "web": "expo start --web",
     "test": "jest --watchAll"
   },
